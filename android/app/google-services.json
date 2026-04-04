@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "862018629934",
+    "project_id": "quickpick-435615",
+    "storage_bucket": "quickpick-435615.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862018629934:android:d58ddc019c7590417c4abf",
+        "android_client_info": {
+          "package_name": "com.quickpick_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862018629934-o9hs3cnuc8fk03n8d8uf52af0eto5fa1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quickpick_app",
+            "certificate_hash": "5b2c1afcc5e9717312716d192669e6e15c51af13"
+          }
+        },
+        {
+          "client_id": "862018629934-sb94v01909vn70ilhm8qd5u4l3umh7dk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFtRy_BQ2PzRHTXx7aSUC2BezGvg1sju0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.quickpick_app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:quickpick/google/google_sign_in.dart';
 import 'package:quickpick/localization/locale_notifier.dart';
 import 'package:quickpick/localization/locales.dart';
@@ -8,10 +12,6 @@ import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
 import 'package:quickpick/request/request.dart';
 import 'package:quickpick/statistic/statistic.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -69,7 +69,7 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
                 useMaterial3: true,
                 primaryColor: Colors.black,
                 colorScheme: ColorScheme.light(
-                    primary: Color(0xFF2196F3), background: Color(0xFFE8E8E8)),
+                    primary: Color(0xFF2196F3), surface: Color(0xFFE8E8E8)),
               ),
               home: Builder(
                 builder: (context) {

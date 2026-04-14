@@ -1,8 +1,8 @@
-import 'package:quickpick/alert/alert.dart';
-import 'package:quickpick/localization/locales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/alert/alert.dart';
+import 'package:quickpick/localization/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileLegalAlert {

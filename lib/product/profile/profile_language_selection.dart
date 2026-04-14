@@ -1,8 +1,8 @@
-import 'package:quickpick/localization/locales.dart';
-import 'package:quickpick/product/profile/profile_language_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:quickpick/localization/locales.dart';
+import 'package:quickpick/product/profile/profile_language_state.dart';
 
 class ProfileLanguageSelection extends StatelessWidget {
   const ProfileLanguageSelection({super.key});

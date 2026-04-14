@@ -1,5 +1,5 @@
-import 'package:quickpick/product/base/page_body.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:quickpick/product/base/page_body.dart';
 
 class PickListBody extends ProductPageBody {
   final GlobalKey<_PickListBodyContentState> _key =

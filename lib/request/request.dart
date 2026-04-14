@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart';
 import 'package:quickpick/config/environment_options.dart';
 import 'package:quickpick/request/request_refresh.dart';
 import 'package:quickpick/request/request_reset.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart';
 
 class Request {
   final String url;

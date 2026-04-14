@@ -2,12 +2,12 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:quickpick/localization/locale_notifier.dart';
-import 'package:quickpick/localization/locale_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:quickpick/localization/locale_notifier.dart';
+import 'package:quickpick/localization/locale_preference.dart';
 
 class Locales {
   static late Locale selectedLocale;

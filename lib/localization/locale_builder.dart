@@ -1,7 +1,7 @@
 part of 'locale_notifier.dart';
 
 class LocaleBuilder extends StatefulWidget {
-  LocaleBuilder({required this.builder, Key? key}) : super(key: key);
+  const LocaleBuilder({required this.builder, super.key});
   final Widget Function(Locale?) builder;
 
   @override

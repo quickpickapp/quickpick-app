@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_logout.dart';
-import 'package:flutter/cupertino.dart';
 
 class RequestReset {
   reset(context) async {

@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/alert/connection_alert.dart';
 import 'package:quickpick/alert/loader_alert.dart';
@@ -9,10 +13,6 @@ import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_email_code_page.dart';
 import 'package:quickpick/product/profile/profile_sign_up_body.dart';
 import 'package:quickpick/request/request.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileEmailConnectPage extends StatefulWidget {

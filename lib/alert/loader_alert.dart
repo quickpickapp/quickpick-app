@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoaderAlert extends StatefulWidget {
-  LoaderAlert({super.key});
+  const LoaderAlert({super.key});
 
   @override
   State<LoaderAlert> createState() => _LoaderAlertState();

@@ -1,9 +1,9 @@
-import 'package:quickpick/localization/locale_text.dart';
-import 'package:quickpick/localization/locales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/localization/locales.dart';
 
 class ProfileEmailCodePage extends StatefulWidget {
   final TextEditingController controller;

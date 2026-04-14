@@ -1,6 +1,6 @@
-import 'package:quickpick/localization/locale_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/localization/locale_text.dart';
 
 enum AlertType { success, error, neutral }
 

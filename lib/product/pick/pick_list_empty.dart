@@ -1,8 +1,7 @@
-import 'package:quickpick/localization/locale_text.dart';
-import 'package:quickpick/product/profile/profile_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/product/profile/profile_page.dart';
 
 class PickListEmptyContent extends StatelessWidget {
   final Function signInCallback;

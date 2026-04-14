@@ -1,6 +1,6 @@
-import 'package:quickpick/request/request.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quickpick/request/request.dart';
 
 class ProfileLogout {
   Future<void> logout(context) async {

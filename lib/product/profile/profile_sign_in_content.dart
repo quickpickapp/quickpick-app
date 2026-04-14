@@ -1,12 +1,11 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/product/profile/profile_apple_alert.dart';
 import 'package:quickpick/product/profile/profile_email_connect_page.dart';
 import 'package:quickpick/product/profile/profile_google_alert.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileSignInContent extends StatelessWidget {
   final Function signInCallback;

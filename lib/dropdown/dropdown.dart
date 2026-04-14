@@ -1,5 +1,5 @@
-import 'package:quickpick/dropdown/dropdown_item.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/dropdown/dropdown_item.dart';
 
 class Dropdown extends StatelessWidget {
   final Widget icon;

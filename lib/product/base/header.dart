@@ -1,5 +1,5 @@
-import 'package:quickpick/product/base/header_account_button.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/product/base/header_account_button.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
   final Function signInCallback;

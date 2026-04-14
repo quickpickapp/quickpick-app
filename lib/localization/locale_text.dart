@@ -25,12 +25,17 @@ class LocaleText extends Text {
           maxLines: maxLines,
         );
   final String k;
+  @override
   final TextStyle? style;
   final bool upperCase, localize;
+  @override
   final TextOverflow? overflow;
   final List<String>? params, localeParams;
+  @override
   final TextAlign? textAlign;
+  @override
   final TextDirection? textDirection;
+  @override
   final int? maxLines;
 
   @override
@@ -48,10 +53,10 @@ class LocaleText extends Text {
     }
     return Text(
       s,
-      style: this.style,
-      overflow: this.overflow,
-      textAlign: this.textAlign,
-      maxLines: this.maxLines,
+      style: style,
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 }

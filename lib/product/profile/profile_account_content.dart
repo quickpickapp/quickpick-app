@@ -1,11 +1,11 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/product/profile/profile_email_change_page.dart';
 import 'package:quickpick/product/profile/profile_logout.dart';
 import 'package:quickpick/product/profile/profile_page.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class ProfileAccountContent extends StatelessWidget {
   final Function signInCallback;

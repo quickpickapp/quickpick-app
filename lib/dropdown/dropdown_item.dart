@@ -1,5 +1,5 @@
-import 'package:quickpick/localization/locale_text.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/localization/locale_text.dart';
 
 class DropdownItem extends StatelessWidget {
   final String text;

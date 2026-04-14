@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/request/request.dart';
 import 'package:quickpick/request/request_reset.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RequestRefresh {
   Future<bool>? _currentRefresh;

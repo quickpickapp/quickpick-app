@@ -1,6 +1,6 @@
-import 'package:quickpick/localization/locale_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:quickpick/localization/locale_text.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfileNotificationToggle extends StatefulWidget {
@@ -37,7 +37,7 @@ class ProfileNotificationToggleState extends State<ProfileNotificationToggle> {
             title: LocaleText("product.profile.notification.description"),
             value: _notificationsEnabled,
             onChanged: _toggleNotifications,
-            activeColor: Colors.indigo,
+            activeThumbColor: Colors.indigo,
             inactiveThumbColor: Colors.grey,
           ),
         );

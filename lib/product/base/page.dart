@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:quickpick/product/base/header.dart';
 import 'package:quickpick/product/base/navigator.dart';
 import 'package:quickpick/product/base/page_body.dart';
-import 'package:flutter/material.dart';
 import 'package:quickpick/product/friend/friend_list_body.dart';
 import 'package:quickpick/product/pick/pick_list_body.dart';
 

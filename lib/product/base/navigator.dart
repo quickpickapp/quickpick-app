@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/base/page_body.dart';
-import 'package:flutter/material.dart';
 
 class ProductNavigator extends StatefulWidget implements PreferredSizeWidget {
   final int selectedIndex;

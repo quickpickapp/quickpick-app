@@ -1,13 +1,13 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/product/profile/profile_account_content.dart';
 import 'package:quickpick/product/profile/profile_footer_link.dart';
 import 'package:quickpick/product/profile/profile_language_selection.dart';
 import 'package:quickpick/product/profile/profile_notification_toggle.dart';
 import 'package:quickpick/product/profile/profile_sign_in_content.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfilePage extends StatefulWidget {

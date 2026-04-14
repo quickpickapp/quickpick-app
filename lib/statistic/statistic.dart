@@ -1,33 +1,35 @@
 import 'dart:convert';
 
-import 'package:quickpick/config/statistic_options.dart';
-import 'package:quickpick/request/request.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:quickpick/config/statistic_options.dart';
+import 'package:quickpick/request/request.dart';
 
 class QuickPickStatistic {
   QuickPickStatistic();
 
   Future<void> keep(context) async {
-    sendAppOpen(context);
-    sendUserJoin(context);
+    sendAppOpening(context);
+    sendAppInstallation(context);
   }
 
-  Future<void> sendAppOpen(context) async {
+  Future<void> sendAppOpening(context) async {
     var body = createStatisticBody();
     var info = await PackageInfo.fromPlatform();
     body["version"] = info.version;
-    await Request.post(url: "/user/app/open/", body: body).send(context);
+    await Request.post(url: "/statistic/app/opening/", body: body)
+        .send(context);
   }
 
-  Future<void> sendUserJoin(context) async {
+  Future<void> sendAppInstallation(context) async {
     const storage = FlutterSecureStorage();
     if (await storage.read(key: "alreadyOpened") != null) {
       return;
     }
     var body = createStatisticBody();
     var response =
-        await Request.post(url: "/user/join/", body: body).send(context);
+        await Request.post(url: "/statistic/app/installation/", body: body)
+            .send(context);
     if (response == null || response.statusCode == 409) {
       return;
     }

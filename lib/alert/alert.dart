@@ -5,20 +5,20 @@ import 'package:quickpick/localization/locale_text.dart';
 enum AlertType { success, error, neutral }
 
 class Alert extends StatefulWidget {
-  AlertType? type;
-  IconData? icon;
-  Color? iconColor;
-  String? description;
-  Widget? content;
-  bool? cancelButton;
-  String? cancelButtonText;
-  Color? cancelButtonColor;
-  String? confirmButtonText;
-  Color? confirmButtonColor;
-  bool Function()? confirmButtonEnabled;
-  Function()? callback;
+  final AlertType? type;
+  final IconData? icon;
+  final Color? iconColor;
+  final String? description;
+  final Widget? content;
+  final bool? cancelButton;
+  final String? cancelButtonText;
+  final Color? cancelButtonColor;
+  final String? confirmButtonText;
+  final Color? confirmButtonColor;
+  final bool Function()? confirmButtonEnabled;
+  final Function()? callback;
 
-  Alert({
+  const Alert({
     super.key,
     this.type,
     this.icon,
@@ -37,7 +37,7 @@ class Alert extends StatefulWidget {
   @override
   State<Alert> createState() => AlertState();
 
-  show(context) {
+  void show(BuildContext context) {
     showDialog(context: context, builder: (BuildContext context) => this);
   }
 }

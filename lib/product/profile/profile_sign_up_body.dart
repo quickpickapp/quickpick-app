@@ -36,20 +36,20 @@ class ProfileSignUpBody {
       return {
         "id": await const AndroidId().getId() ?? "",
         "operatingSystem": "Android",
-        "operatingSystemVersion": androidInfo.version.release ?? "",
-        "brand": androidInfo.brand ?? "",
-        "model": androidInfo.model ?? "",
-        "name": androidInfo.device ?? "",
+        "operatingSystemVersion": androidInfo.version.release,
+        "brand": androidInfo.brand,
+        "model": androidInfo.model,
+        "name": androidInfo.device,
       };
     } else if (Platform.isIOS) {
       final iosInfo = await deviceInfo.iosInfo;
       return {
         "id": iosInfo.identifierForVendor ?? "",
         "operatingSystem": "IOS",
-        "operatingSystemVersion": iosInfo.systemVersion ?? "",
+        "operatingSystemVersion": iosInfo.systemVersion,
         "brand": "Apple",
-        "model": iosInfo.utsname.machine ?? "",
-        "name": iosInfo.name ?? "",
+        "model": iosInfo.utsname.machine,
+        "name": iosInfo.name,
       };
     }
     return {};

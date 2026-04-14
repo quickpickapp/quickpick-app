@@ -5,38 +5,21 @@ import 'locales.dart';
 class LocaleText extends Text {
   const LocaleText(
     this.k, {
-    this.style,
+    super.style,
     this.upperCase = false,
-    Key? key,
-    this.overflow,
+    super.key,
+    super.overflow,
     this.localize = true,
     this.params,
-    this.textAlign,
-    this.textDirection,
+    super.textAlign,
+    super.textDirection,
     this.localeParams,
-    this.maxLines,
-  }) : super(
-          k,
-          key: key,
-          style: style,
-          overflow: overflow,
-          textAlign: textAlign,
-          textDirection: textDirection,
-          maxLines: maxLines,
-        );
+    super.maxLines,
+  }) : super(k);
+
   final String k;
-  @override
-  final TextStyle? style;
   final bool upperCase, localize;
-  @override
-  final TextOverflow? overflow;
   final List<String>? params, localeParams;
-  @override
-  final TextAlign? textAlign;
-  @override
-  final TextDirection? textDirection;
-  @override
-  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {

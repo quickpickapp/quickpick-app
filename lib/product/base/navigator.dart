@@ -31,7 +31,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
       loadNotifications(context);
       for (var i = 0; i < widget.pageBodies.length; i++) {
         var pageBody = widget.pageBodies[i];
-        pageBody.navigatorCallback = () {
+        pageBody.controller.navigatorCallback = () {
           pageBody.notifications(context).then((count) {
             setState(() {
               notificationCounts[i] = count;
@@ -92,7 +92,9 @@ class _ProductNavigatorState extends State<ProductNavigator> {
           curve: Curves.easeInOut,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           decoration: BoxDecoration(
-            color: isSelected ? _color.withOpacity(0.15) : Colors.transparent,
+            color: isSelected
+                ? _color.withValues(alpha: 0.15)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
@@ -101,7 +103,9 @@ class _ProductNavigatorState extends State<ProductNavigator> {
             child: Icon(
               isSelected ? body.selectedIcon : body.unselectedIcon,
               size: 30,
-              color: isSelected ? Color.lerp(Colors.black, _color, 0.8) : Colors.black54,
+              color: isSelected
+                  ? Color.lerp(Colors.black, _color, 0.8)
+                  : Colors.black54,
             ),
           ),
         ),

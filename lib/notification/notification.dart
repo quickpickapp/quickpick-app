@@ -112,6 +112,6 @@ class QuickPickNotification {
     if (payload == null || payload.isEmpty) {
       return;
     }
-    final data = json.decode(payload);
+    //final data = json.decode(payload);
   }
 }

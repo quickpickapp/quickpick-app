@@ -42,9 +42,9 @@ class ProfileLegalAlert {
 }
 
 class _ProfileLegalAlertContent extends StatefulWidget {
-  GlobalKey<AlertState> alertKey;
+  final GlobalKey<AlertState> alertKey;
 
-  _ProfileLegalAlertContent({super.key, required this.alertKey});
+  const _ProfileLegalAlertContent({super.key, required this.alertKey});
 
   @override
   State<_ProfileLegalAlertContent> createState() =>

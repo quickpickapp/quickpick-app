@@ -6,9 +6,9 @@ import 'package:quickpick/product/friend/friend_list_body.dart';
 import 'package:quickpick/product/pick/pick_list_body.dart';
 
 class ProductPage extends StatefulWidget {
-  int? initialPageIndex = 0;
+  final int? initialPageIndex;
 
-  ProductPage({super.key, this.initialPageIndex});
+  const ProductPage({super.key, this.initialPageIndex = 0});
 
   @override
   State<ProductPage> createState() => ProductPageState();

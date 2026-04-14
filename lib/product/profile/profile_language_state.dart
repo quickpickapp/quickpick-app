@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProfileLanguageState extends ChangeNotifier {
-  var language;
+  String language;
 
   ProfileLanguageState(this.language);
 

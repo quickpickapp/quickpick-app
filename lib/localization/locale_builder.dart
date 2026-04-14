@@ -5,10 +5,10 @@ class LocaleBuilder extends StatefulWidget {
   final Widget Function(Locale?) builder;
 
   @override
-  _LocaleBuilderState createState() => _LocaleBuilderState();
+  LocaleBuilderState createState() => LocaleBuilderState();
 }
 
-class _LocaleBuilderState extends State<LocaleBuilder> {
+class LocaleBuilderState extends State<LocaleBuilder> {
   Locale? locale;
 
   @override

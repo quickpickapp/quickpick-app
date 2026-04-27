@@ -18,14 +18,14 @@ class RequestRefresh {
 
   Future<bool> performRefresh(context) async {
     const storage = FlutterSecureStorage();
-    final refreshToken = await storage.read(key: "refreshToken") ?? "";
+    final refreshToken = await storage.read(key: "refresh_token") ?? "";
     if (refreshToken == "") {
       await RequestReset().reset(context);
       return false;
     }
     var response = await Request.post(
         url: "/user/authorization/refresh/",
-        body: <String, String>{"refreshToken": refreshToken}).send(context);
+        body: <String, String>{"refresh_token": refreshToken}).send(context);
     if (response == null || response.statusCode == 409) {
       return false;
     }
@@ -35,9 +35,9 @@ class RequestRefresh {
       return false;
     }
     await storage.write(
-        key: "authenticationToken", value: responseBody["authenticationToken"]);
+        key: "authentication_token", value: responseBody["authentication_token"]);
     await storage.write(
-        key: "refreshToken", value: responseBody["refreshToken"]);
+        key: "refresh_token", value: responseBody["refresh_token"]);
     return true;
   }
 }

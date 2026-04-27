@@ -31,7 +31,7 @@ class Request {
     headers["Content-Type"] = "application/json; charset=UTF-8";
     const storage = FlutterSecureStorage();
     String authenticationToken =
-        await storage.read(key: "authenticationToken") ?? "";
+        await storage.read(key: "authentication_token") ?? "";
     if (authenticationToken != "") {
       headers["Authorization"] = "Bearer $authenticationToken";
     }

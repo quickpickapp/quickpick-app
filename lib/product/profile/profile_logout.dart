@@ -12,8 +12,8 @@ class ProfileLogout {
     const storage = FlutterSecureStorage();
     await storage.delete(key: "email");
     await storage.delete(key: "user");
-    await storage.delete(key: "authenticationToken");
-    await storage.delete(key: "refreshToken");
+    await storage.delete(key: "authentication_token");
+    await storage.delete(key: "refresh_token");
     await GoogleSignIn.instance.signOut();
   }
 }

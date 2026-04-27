@@ -90,14 +90,14 @@ class ProfileGoogleAlert {
     const storage = FlutterSecureStorage();
     await storage.write(key: "email", value: responseBody["email"]);
     if (responseBody["user"] != null &&
-        responseBody["authenticationToken"] != null &&
-        responseBody["refreshToken"] != null) {
+        responseBody["authentication_token"] != null &&
+        responseBody["refresh_token"] != null) {
       await storage.write(key: "user", value: responseBody["user"]);
       await storage.write(
-          key: "authenticationToken",
-          value: responseBody["authenticationToken"]);
+          key: "authentication_token",
+          value: responseBody["authentication_token"]);
       await storage.write(
-          key: "refreshToken", value: responseBody["refreshToken"]);
+          key: "refresh_token", value: responseBody["refresh_token"]);
     }
   }
 }

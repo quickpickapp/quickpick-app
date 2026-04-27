@@ -10,6 +10,7 @@ import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/notification/notification.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
+import 'package:quickpick/product/signup/signup_name_page.dart';
 import 'package:quickpick/request/request.dart';
 import 'package:quickpick/statistic/statistic.dart';
 
@@ -31,8 +32,6 @@ class QuickPickApp extends StatefulWidget {
 }
 
 class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver {
-  final GlobalKey<ProductPageState> _productPageKey =
-      GlobalKey<ProductPageState>();
   bool _initialized = false;
 
   @override
@@ -76,7 +75,7 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkInitialization(context);
                   });
-                  return ProductPage(key: _productPageKey);
+                  return SignupNamePage();//ProductPage(key: _productPageKey);
                 },
               ),
               debugShowCheckedModeBanner: false,

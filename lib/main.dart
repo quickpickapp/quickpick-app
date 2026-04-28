@@ -111,6 +111,6 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
     if (email == null) {
       return;
     }
-    await Request.get(url: "/user/authorized/").send(context);
+    await Request.get(url: "/authorized/").send(context);
   }
 }

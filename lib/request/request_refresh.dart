@@ -24,7 +24,7 @@ class RequestRefresh {
       return false;
     }
     var response = await Request.post(
-        url: "/user/authorization/refresh/",
+        url: "/authentication/refresh/",
         body: <String, String>{"refresh_token": refreshToken}).send(context);
     if (response == null || response.statusCode == 409) {
       return false;

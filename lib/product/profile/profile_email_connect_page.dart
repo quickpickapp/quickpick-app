@@ -254,7 +254,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       "email": _controller.text,
       "language": language
     };
-    var response = await Request.post(url: "/user/bind/request/", body: body)
+    var response = await Request.post(url: "/authentication/request/", body: body)
         .send(context);
     setState(() {
       _connecting = false;
@@ -295,7 +295,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     var body = <String, Object>{"code": code, "user": user};
     body.addAll(
         await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
-    var response = await Request.post(url: "/user/bind/complete/", body: body)
+    var response = await Request.post(url: "/authentication/complete/", body: body)
         .send(context);
     if (Navigator.canPop(context)) {
       Navigator.pop(context);

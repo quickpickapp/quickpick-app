@@ -50,7 +50,7 @@ class ProfileGoogleAlert {
     body.addAll(
         await ProfileSignUpBody().generate(legalChecked, newsletterChecked));
     var response =
-        await Request.post(url: "/user/bind/google/", body: body).send(context);
+        await Request.post(url: "/authentication/google/", body: body).send(context);
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

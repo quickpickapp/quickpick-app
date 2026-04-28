@@ -46,7 +46,7 @@ class ProfileAppleAlert {
     body.addAll(
         await ProfileSignUpBody().generate(legalChecked, newsletterChecked));
     var response =
-        await Request.post(url: "/user/bind/apple/", body: body).send(context);
+        await Request.post(url: "/authentication/apple/", body: body).send(context);
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

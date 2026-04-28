@@ -160,7 +160,7 @@ class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
       "language": language
     };
     var response =
-        await Request.post(url: "/user/email/change/request/", body: body)
+        await Request.post(url: "/email/change/request/", body: body)
             .send(context);
     setState(() {
       _connecting = false;
@@ -211,7 +211,7 @@ class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
     LoaderAlert().show(context);
     var body = <String, Object>{"code": code};
     var response =
-        await Request.post(url: "/user/email/change/complete/", body: body)
+        await Request.post(url: "/email/change/complete/", body: body)
             .send(context);
     if (Navigator.canPop(context)) {
       Navigator.pop(context);

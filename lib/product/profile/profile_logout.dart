@@ -4,7 +4,7 @@ import 'package:quickpick/request/request.dart';
 
 class ProfileLogout {
   Future<void> logout(context) async {
-    await Request.get(url: "/user/logout/").send(context);
+    await Request.get(url: "/logout/").send(context);
     await reset(context);
   }
 

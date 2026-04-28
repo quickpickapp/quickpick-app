@@ -6,6 +6,11 @@
   "connection.failed": "Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut",
   "connection.logout": "Bei der Authentifizierung ist ein Fehler aufgetreten. Sie wurden deshalb automatisch abgemeldet. Bitte melden Sie sich erneut an",
 
+  "product.signup.name.label": "Name",
+  "product.signup.name.placeholder": "Gebe deinen Namen ein",
+  "product.signup.connect.skip": "Ohne Anmeldung weiter",
+  "product.signup.continue": "Weiter",
+
   "product.pick.list.label": "Picks",
   "product.pick.list.new.description": "Hattest du schon Picks?",
   "product.pick.list.new.login": "Jetzt anmelden",

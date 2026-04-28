@@ -6,6 +6,11 @@
   "connection.failed": "No connection could be established. Please try again later",
   "connection.logout": "An error occurred during authentication. You were therefore automatically logged out. Please log in again",
 
+  "product.signup.name.label": "Name",
+  "product.signup.name.placeholder": "Enter your name",
+  "product.signup.connect.skip": "Continue without logging in",
+  "product.signup.continue": "Continue",
+
   "product.pick.list.label": "Picks",
   "product.pick.list.new.description": "You already had picks?",
   "product.pick.list.new.login": "Sign in now",

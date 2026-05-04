@@ -3,6 +3,7 @@ import 'package:quickpick/product/base/header.dart';
 import 'package:quickpick/product/base/navigator.dart';
 import 'package:quickpick/product/base/page_body.dart';
 import 'package:quickpick/product/friend/friend_list_body.dart';
+import 'package:quickpick/product/pick/pick_button.dart';
 import 'package:quickpick/product/pick/pick_list_body.dart';
 
 class ProductPage extends StatefulWidget {
@@ -53,6 +54,8 @@ class ProductPageState extends State<ProductPage> {
             pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
                 .content(context),
         backgroundColor: Color(0xFFFAFAFA),
+        floatingActionButton: PickButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

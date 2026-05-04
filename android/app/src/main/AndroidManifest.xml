@@ -79,6 +79,7 @@
     <uses-feature android:name="android.hardware.nfc" android:required="true" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

@@ -111,5 +111,7 @@
 		<string>862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com</string>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+    <string>Camera access is required for live preview</string>
 	</dict>
 </plist>

@@ -8,6 +8,7 @@
 
   "product.signup.name.label": "Name",
   "product.signup.name.placeholder": "Enter your name",
+  "product.signup.name.skip": "You already had an account?",
   "product.signup.connect.skip": "Continue without logging in",
   "product.signup.continue": "Continue",
 

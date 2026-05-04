@@ -38,18 +38,22 @@ class ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: Header(
-        signInCallback: () => {},
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: Header(
+          signInCallback: () => {},
+        ),
+        bottomNavigationBar: ProductNavigator(
+          selectedIndex: _selectedIndex,
+          updateIndex: _onItemTapped,
+          pageBodies: pageBodies,
+        ),
+        body:
+            pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
+                .content(context),
+        backgroundColor: Color(0xFFFAFAFA),
       ),
-      bottomNavigationBar: ProductNavigator(
-        selectedIndex: _selectedIndex,
-        updateIndex: _onItemTapped,
-        pageBodies: pageBodies,
-      ),
-      body: pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
-          .content(context),
-      backgroundColor: Color(0xFFFAFAFA),
     );
   }
 }

@@ -31,9 +31,10 @@ class _SignupNamePageState extends State<SignupNamePage> {
   void _onContinue() {
     final name = _nameController.text.trim();
     if (name.isEmpty) return;
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SignupConnectPage()),
+      MaterialPageRoute(
+          builder: (context) => SignupConnectPage(hasAccount: false)),
     );
   }
 
@@ -112,6 +113,21 @@ class _SignupNamePageState extends State<SignupNamePage> {
                             fillColor: Colors.grey[200],
                           ),
                         ),
+                        SizedBox(height: 10),
+                        TextButton(
+                          onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SignupConnectPage(hasAccount: true)),
+                            )
+                          },
+                          child: LocaleText(
+                            "product.signup.name.skip",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        )
                       ],
                     ),
                     Padding(
@@ -121,9 +137,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
                         child: ElevatedButton.icon(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all(
-                              _isNameValid
-                                  ? Colors.indigo
-                                  : Colors.indigo[200],
+                              _isNameValid ? Colors.indigo : Colors.indigo[200],
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(

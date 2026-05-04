@@ -75,7 +75,7 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkInitialization(context);
                   });
-                  return SignupNamePage();//ProductPage(key: _productPageKey);
+                  return SignupNamePage();//ProductPage();
                 },
               ),
               debugShowCheckedModeBanner: false,

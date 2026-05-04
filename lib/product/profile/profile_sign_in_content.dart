@@ -9,15 +9,17 @@ import 'package:quickpick/product/profile/profile_google_alert.dart';
 
 class ProfileSignInContent extends StatelessWidget {
   final Function signInCallback;
+  bool showDisclaimer;
 
-  const ProfileSignInContent({super.key, required this.signInCallback});
+  ProfileSignInContent(
+      {super.key, required this.signInCallback, this.showDisclaimer = true});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
+        showDisclaimer ? Container(
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.grey[200],
@@ -49,20 +51,21 @@ class ProfileSignInContent extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        SizedBox(height: 25),
+        ) : SizedBox.shrink(),
+        showDisclaimer ? SizedBox(height: 25) : SizedBox.shrink(),
         createSignInButton(
           Colors.indigo,
           Colors.white,
           FontAwesomeIcons.envelope,
           "product.profile.account.email.button",
-          () async {
+              () async {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfileEmailConnectPage(
-                  signInCallback: signInCallback,
-                ),
+                builder: (context) =>
+                    ProfileEmailConnectPage(
+                      signInCallback: signInCallback,
+                    ),
               ),
             );
           },
@@ -70,15 +73,15 @@ class ProfileSignInContent extends StatelessWidget {
         SizedBox(height: Platform.isIOS ? 10 : 0),
         Platform.isIOS
             ? createSignInButton(
-                Colors.black,
-                Colors.white,
-                FontAwesomeIcons.apple,
-                "product.profile.account.apple.button",
-                () async {
-                  ProfileAppleAlert(signInCallback: signInCallback)
-                      .show(context);
-                },
-              )
+          Colors.black,
+          Colors.white,
+          FontAwesomeIcons.apple,
+          "product.profile.account.apple.button",
+              () async {
+            ProfileAppleAlert(signInCallback: signInCallback)
+                .show(context);
+          },
+        )
             : SizedBox.shrink(),
         SizedBox(height: 10),
         createSignInButton(
@@ -86,7 +89,7 @@ class ProfileSignInContent extends StatelessWidget {
           Platform.isIOS ? Colors.black : Colors.white,
           FontAwesomeIcons.google,
           "product.profile.account.google.button",
-          () async {
+              () async {
             ProfileGoogleAlert(signInCallback: signInCallback).show(context);
           },
         ),
@@ -94,8 +97,8 @@ class ProfileSignInContent extends StatelessWidget {
     );
   }
 
-  Widget createSignInButton(
-      backgroundColor, foregroundColor, icon, text, onPressed) {
+  Widget createSignInButton(backgroundColor, foregroundColor, icon, text,
+      onPressed) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(

@@ -27,6 +27,7 @@ class _HeaderState extends State<Header> {
       actions: <Widget>[
         HeaderAccountButton(signInCallback: widget.signInCallback)
       ],
+      automaticallyImplyLeading: false,
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Container(

@@ -10,6 +10,7 @@ import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/notification/notification.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
+import 'package:quickpick/product/signup/signup_legal_page.dart';
 import 'package:quickpick/product/signup/signup_name_page.dart';
 import 'package:quickpick/request/request.dart';
 import 'package:quickpick/statistic/statistic.dart';
@@ -75,7 +76,7 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkInitialization(context);
                   });
-                  return ProductPage();
+                  return SignupLegalPage();
                 },
               ),
               debugShowCheckedModeBanner: false,

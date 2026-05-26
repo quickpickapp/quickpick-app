@@ -1,14 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quickpick/localization/locale_text.dart';
-import 'package:quickpick/product/profile/profile_account_content.dart';
 import 'package:quickpick/product/profile/profile_footer_link.dart';
 import 'package:quickpick/product/profile/profile_language_selection.dart';
 import 'package:quickpick/product/profile/profile_notification_toggle.dart';
-import 'package:quickpick/product/profile/profile_sign_in_content.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfilePage extends StatefulWidget {
   final Function signInCallback;
@@ -59,14 +55,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 30),
-                        LocaleText(
-                          "product.profile.account",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        accountContent(),
                         SizedBox(height: 30),
                         LocaleText(
                           "product.profile.language",
@@ -136,41 +124,6 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
       ),
-    );
-  }
-
-  Widget accountContent() {
-    if (accountContentElement != null) {
-      return accountContentElement!;
-    }
-    const storage = FlutterSecureStorage();
-    return FutureBuilder<String?>(
-      future: storage.read(key: "email"),
-      builder: (context, AsyncSnapshot<String?> email) {
-        if (email.connectionState == ConnectionState.done) {
-          if (email.data != null && email.data != "") {
-            accountContentElement = ProfileAccountContent(
-                signInCallback: widget.signInCallback, email: email.data ?? "");
-          } else {
-            accountContentElement =
-                ProfileSignInContent(signInCallback: widget.signInCallback);
-          }
-          return accountContentElement!;
-        }
-        return Skeletonizer(
-          enabled: email.connectionState != ConnectionState.done,
-          child: Skeleton.leaf(
-            child: Container(
-              width: double.infinity,
-              height: 300,
-              decoration: BoxDecoration(
-                color: Colors.grey[500],
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

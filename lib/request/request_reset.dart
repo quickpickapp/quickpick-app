@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/product/base/page.dart';
-import 'package:quickpick/product/profile/profile_logout.dart';
 
 class RequestReset {
   reset(context) async {
-    await ProfileLogout().reset(context);
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "email");
+    await storage.delete(key: "user");
+    await storage.delete(key: "authentication_token");
+    await storage.delete(key: "refresh_token");
     Alert(
       description: "connection.logout",
       icon: CupertinoIcons.exclamationmark_triangle,

@@ -1,38 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
+import 'package:quickpick/product/signup/signup_verify_page.dart';
 
-class SignupNamePage extends StatefulWidget {
-  const SignupNamePage({super.key});
+class SignupPhonePage extends StatefulWidget {
+  const SignupPhonePage({super.key});
 
   @override
-  State<SignupNamePage> createState() => _SignupNamePageState();
+  State<SignupPhonePage> createState() => _SignupPhonePageState();
 }
 
-class _SignupNamePageState extends State<SignupNamePage> {
-  final _nameController = TextEditingController();
+class _SignupPhonePageState extends State<SignupPhonePage> {
+  final _phoneController = TextEditingController();
   bool _hasTyped = false;
-  bool _isNameValid = false;
+  bool _isPhoneValid = false;
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
-  void _onNameChanged(String value) {
+  void _onPhoneChanged(String value) {
+    final digitsOnly = value.replaceAll(RegExp(r'\D'), '');
     setState(() {
       _hasTyped = true;
-      _isNameValid = value.trim().isNotEmpty;
+      _isPhoneValid = digitsOnly.length >= 10;
     });
   }
 
   void _onContinue() {
-    final name = _nameController.text.trim();
-    if (name.isEmpty) {
+    final phone = _phoneController.text.trim();
+    if (phone.isEmpty || !_isPhoneValid) {
       return;
     }
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignupVerifyPage(phoneNumber: phone),
+      ),
+    );
   }
 
   OutlineInputBorder _buildInputBorder() {
@@ -40,7 +48,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
     if (!_hasTyped) {
       borderColor = Colors.grey;
     } else {
-      borderColor = _isNameValid ? Colors.green : Colors.red;
+      borderColor = _isPhoneValid ? Colors.green : Colors.red;
     }
     return OutlineInputBorder(
       borderSide: BorderSide(color: borderColor, width: 2.0),
@@ -78,7 +86,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
                       children: [
                         SizedBox(height: 50),
                         LocaleText(
-                          "product.signup.name.label",
+                          "product.signup.phone.label",
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -87,17 +95,24 @@ class _SignupNamePageState extends State<SignupNamePage> {
                         ),
                         SizedBox(height: 10),
                         TextField(
-                          controller: _nameController,
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
                           textInputAction: TextInputAction.done,
-                          onChanged: _onNameChanged,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'^\+?\d*'),
+                            ),
+                            LengthLimitingTextInputFormatter(16),
+                          ],
+                          onChanged: _onPhoneChanged,
                           onSubmitted: (_) => _onContinue(),
                           decoration: InputDecoration(
                             hintStyle: TextStyle(color: Colors.grey[500]),
                             hintText: Locales.string(
                               context,
-                              "product.signup.name.placeholder",
+                              "product.signup.phone.placeholder",
                             ),
-                            prefixIcon: Icon(Icons.person, size: 25),
+                            prefixIcon: Icon(Icons.phone, size: 25),
                             isDense: true,
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 10,
@@ -120,7 +135,9 @@ class _SignupNamePageState extends State<SignupNamePage> {
                         child: ElevatedButton.icon(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all(
-                              _isNameValid ? Colors.indigo : Colors.indigo[200],
+                              _isPhoneValid
+                                  ? Colors.indigo
+                                  : Colors.indigo[200],
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
@@ -135,7 +152,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
                             ),
                             alignment: Alignment.center,
                           ),
-                          onPressed: _isNameValid ? _onContinue : null,
+                          onPressed: _isPhoneValid ? _onContinue : null,
                           icon: Container(
                             margin: EdgeInsets.only(right: 5),
                             child: Icon(

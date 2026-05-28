@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quickpick/alert/alert.dart';
+import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/signup/signup_verify_page.dart';
+import 'package:quickpick/request/request.dart';
 
 class SignupPhonePage extends StatefulWidget {
   const SignupPhonePage({super.key});
@@ -30,9 +35,27 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
     });
   }
 
-  void _onContinue() {
+  void _onContinue() async {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty || !_isPhoneValid) {
+      return;
+    }
+    LoaderAlert().show(context);
+    var body = <String, String>{"phone_number": phone};
+    var response = await Request.post(url: "/signup/request/code/", body: body)
+      .send(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    if (response == null) {
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] != true) {
+      Alert(
+        description: "product.signup.phone.failed",
+        type: AlertType.error,
+      ).show(context);
       return;
     }
     Navigator.push(

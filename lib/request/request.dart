@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:quickpick/config/environment_options.dart';
@@ -63,22 +65,64 @@ class Request {
   Future<Response?> generateResponse(headers) async {
     if (method == "GET") {
       try {
-        return await get(Uri.parse(url), headers: headers)
+        final response = await get(Uri.parse(url), headers: headers)
             .timeout(const Duration(seconds: _timeout));
+        _logRequest(method: method, headers: headers, response: response);
+        return response;
       } catch (exception) {
+        _logRequest(method: method, headers: headers, exception: exception);
         return null;
       }
     } else if (method == "POST") {
       try {
         Map<String, Object> body = Map.from(this.body);
-        return await post(Uri.parse(url),
-                headers: headers, body: jsonEncode(body))
+        final response = await post(Uri.parse(url),
+            headers: headers, body: jsonEncode(body))
             .timeout(const Duration(seconds: _timeout));
+        _logRequest(method: method, headers: headers, body: body, response: response);
+        return response;
       } catch (exception) {
+        _logRequest(method: method, headers: headers, body: this.body, exception: exception);
         return null;
       }
     } else {
       throw UnsupportedError("Unsupported HTTP method: $method");
     }
+  }
+
+  void _logRequest({
+    required String method,
+    required Map<String, dynamic> headers,
+    Map<String, Object>? body,
+    Response? response,
+    Object? exception,
+  }) {
+    if (!kDebugMode) {
+      return;
+    }
+    final sanitizedHeaders = Map<String, dynamic>.from(headers);
+    if (sanitizedHeaders.containsKey("Authorization")) {
+      sanitizedHeaders["Authorization"] = "Bearer [REDACTED]";
+    }
+    final buffer = StringBuffer();
+    buffer.write("");
+    buffer.writeln("┌─────────────────────────────────────────");
+    buffer.writeln("│ $method $url");
+    buffer.writeln("├─ Headers");
+    sanitizedHeaders.forEach((k, v) => buffer.writeln("│   $k: $v"));
+    if (body != null && body.isNotEmpty) {
+      buffer.writeln("├─ Body");
+      buffer.writeln("│   ${jsonEncode(body)}");
+    }
+    if (exception != null) {
+      buffer.writeln("├─ Exception");
+      buffer.writeln("│   $exception");
+    }
+    if (response != null) {
+      buffer.writeln("├─ Response [${response.statusCode}]");
+      buffer.writeln("│   ${response.body}");
+    }
+    buffer.writeln("└─────────────────────────────────────────");
+    developer.log(buffer.toString(), name: "Request");
   }
 }

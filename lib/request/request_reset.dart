@@ -6,7 +6,6 @@ import 'package:quickpick/product/base/page.dart';
 class RequestReset {
   reset(context) async {
     const storage = FlutterSecureStorage();
-    await storage.delete(key: "email");
     await storage.delete(key: "user");
     await storage.delete(key: "authentication_token");
     await storage.delete(key: "refresh_token");

@@ -1,6 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:quickpick/alert/alert.dart';
+import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/localization/locales.dart';
+import 'package:quickpick/product/base/page.dart';
+import 'package:quickpick/product/signup/signup_name_page.dart';
+import 'package:quickpick/request/request.dart';
 
 class SignupVerifyPage extends StatefulWidget {
   final String phoneNumber;
@@ -13,38 +22,49 @@ class SignupVerifyPage extends StatefulWidget {
 
 class _SignupVerifyPageState extends State<SignupVerifyPage> {
   static const int _codeLength = 6;
+  static const int _resendCooldown = 60;
 
   final List<TextEditingController> _controllers =
-  List.generate(_codeLength, (_) => TextEditingController());
+      List.generate(_codeLength, (_) => TextEditingController());
   final List<FocusNode> _focusNodes =
-  List.generate(_codeLength, (_) => FocusNode());
+      List.generate(_codeLength, (_) => FocusNode());
 
   bool _isCodeValid = false;
+  int _resendSecondsLeft = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startResendTimer();
+  }
 
   @override
   void dispose() {
-    for (final c in _controllers) {
-      c.dispose();
-    }
-    for (final f in _focusNodes) {
-      f.dispose();
-    }
+    for (final c in _controllers) c.dispose();
+    for (final f in _focusNodes) f.dispose();
     super.dispose();
   }
 
-  String get _fullCode =>
-      _controllers.map((c) => c.text).join();
+  void _startResendTimer() {
+    setState(() => _resendSecondsLeft = _resendCooldown);
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return false;
+      setState(() => _resendSecondsLeft--);
+      return _resendSecondsLeft > 0;
+    });
+  }
+
+  String get _fullCode => _controllers.map((c) => c.text).join();
 
   void _onDigitChanged(int index, String value) {
     if (value.length > 1) {
-      // Handle paste: distribute digits across boxes
       final digits = value.replaceAll(RegExp(r'\D'), '');
       for (int i = 0; i < _codeLength; i++) {
         _controllers[i].text = i < digits.length ? digits[i] : '';
       }
-      final nextFocus = (digits.length < _codeLength)
-          ? digits.length
-          : _codeLength - 1;
+      final nextFocus =
+          (digits.length < _codeLength) ? digits.length : _codeLength - 1;
       FocusScope.of(context).requestFocus(_focusNodes[nextFocus]);
     } else if (value.length == 1) {
       if (index < _codeLength - 1) {
@@ -67,37 +87,103 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
         index > 0) {
       FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
       _controllers[index - 1].clear();
-      setState(() {
-        _isCodeValid = false;
-      });
+      setState(() => _isCodeValid = false);
     }
   }
 
-  void _onContinue() {
-    if (!_isCodeValid) return;
-
+  void _onContinue() async {
+    if (!_isCodeValid) {
+      return;
+    }
+    LoaderAlert().show(context);
+    var body = <String, String>{
+      "phone_number": widget.phoneNumber,
+      "code": _fullCode
+    };
+    var response = await Request.post(url: "/signup/verify/code/", body: body)
+        .send(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    if (response == null) {
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] != true) {
+      Alert(
+        description: "product.signup.verify.failed",
+        type: AlertType.error,
+      ).show(context);
+      return;
+    }
+    if (responseBody["new_user"] == true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SignupNamePage(
+            phoneNumber: widget.phoneNumber,
+            verificationToken: responseBody["verification_token"],
+          ),
+        ),
+      );
+    }
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "user", value: responseBody["user"]);
+    await storage.write(
+        key: "authentication_token",
+        value: responseBody["authentication_token"]);
+    await storage.write(
+        key: "refresh_token", value: responseBody["refresh_token"]);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductPage(),
+      ),
+    );
   }
 
-  void _onResend() {
-
+  void _onResend() async {
+    if (_resendSecondsLeft > 0) {
+      return;
+    }
+    _startResendTimer();
+    LoaderAlert().show(context);
+    var body = <String, String>{"phone_number": widget.phoneNumber, "code": ""};
+    var response = await Request.post(url: "/signup/request/code/", body: body)
+        .send(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    if (response == null) {
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    Alert(
+      description:
+          "product.signup.phone.${responseBody["success"] != true ? "failed" : "success"}",
+      type:
+          responseBody["success"] != true ? AlertType.error : AlertType.success,
+    ).show(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final canResend = _resendSecondsLeft == 0;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
+          preferredSize: const Size.fromHeight(1.0),
           child: Container(color: Colors.black12, height: 1.0),
         ),
       ),
-      backgroundColor: Color(0xFFFAFAFA),
+      backgroundColor: const Color(0xFFFAFAFA),
       resizeToAvoidBottomInset: true,
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
+        margin: const EdgeInsets.symmetric(horizontal: 30),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
@@ -110,29 +196,28 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 50),
+                        const SizedBox(height: 50),
                         LocaleText(
                           "product.signup.verify.label",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.left,
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text.rich(
                           TextSpan(
                             children: [
                               TextSpan(
-                                text: "We sent a 6-digit code to ",
+                                text: Locales.string(context,
+                                    "product.signup.verify.sent.prefix"),
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
+                                    fontSize: 14, color: Colors.grey[600]),
                               ),
                               TextSpan(
                                 text: widget.phoneNumber,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.black87,
                                   fontWeight: FontWeight.w600,
@@ -141,7 +226,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: List.generate(_codeLength, (index) {
@@ -164,16 +249,15 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                   ],
                                   onChanged: (value) =>
                                       _onDigitChanged(index, value),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   decoration: InputDecoration(
                                     counterText: '',
                                     isDense: true,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 14),
                                     border: _buildBoxBorder(index),
                                     enabledBorder: _buildBoxBorder(index),
                                     focusedBorder: _buildBoxBorder(index),
@@ -185,42 +269,52 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                             );
                           }),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Didn't receive a code? ",
+                              Locales.string(
+                                  context, "product.signup.verify.no.code"),
                               style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey[600],
-                              ),
+                                  fontSize: 13, color: Colors.grey[600]),
                             ),
                             GestureDetector(
-                              onTap: _onResend,
-                              child: Text(
-                                "Resend",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.indigo,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                              onTap: canResend ? _onResend : null,
+                              child: canResend
+                                  ? Text(
+                                      Locales.string(context,
+                                          "product.signup.verify.resend"),
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.indigo,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  : Text(
+                                      Locales.string(context,
+                                              "product.signup.verify.resend.wait")
+                                          .replaceAll("%SECONDS%",
+                                              _resendSecondsLeft.toString()),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[400],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 30),
+                      padding: const EdgeInsets.symmetric(vertical: 30),
                       child: Align(
                         alignment: Alignment.center,
                         child: ElevatedButton.icon(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all(
-                              _isCodeValid
-                                  ? Colors.indigo
-                                  : Colors.indigo[200],
+                              _isCodeValid ? Colors.indigo : Colors.indigo[200],
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
@@ -228,17 +322,17 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                               ),
                             ),
                             padding: WidgetStateProperty.all(
-                              EdgeInsets.symmetric(vertical: 16),
+                              const EdgeInsets.symmetric(vertical: 16),
                             ),
                             minimumSize: WidgetStateProperty.all(
-                              Size(double.infinity, 0),
+                              const Size(double.infinity, 0),
                             ),
                             alignment: Alignment.center,
                           ),
                           onPressed: _isCodeValid ? _onContinue : null,
                           icon: Container(
-                            margin: EdgeInsets.only(right: 5),
-                            child: Icon(
+                            margin: const EdgeInsets.only(right: 5),
+                            child: const Icon(
                               Icons.arrow_forward,
                               color: Colors.white,
                               size: 25,
@@ -246,7 +340,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                           ),
                           label: LocaleText(
                             "product.signup.continue",
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -271,7 +365,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
     if (!isFilled) {
       borderColor = Colors.grey;
     } else {
-      borderColor = _isCodeValid ? Colors.green : Colors.indigo;
+      borderColor = Colors.indigo;
     }
     return OutlineInputBorder(
       borderSide: BorderSide(color: borderColor, width: 2.0),

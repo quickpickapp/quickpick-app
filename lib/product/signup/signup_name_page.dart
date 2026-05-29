@@ -1,9 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:quickpick/alert/alert.dart';
+import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
+import 'package:quickpick/product/base/page.dart';
+import 'package:quickpick/product/signup/signup_body.dart';
+import 'package:quickpick/request/request.dart';
 
 class SignupNamePage extends StatefulWidget {
-  const SignupNamePage({super.key});
+  final String phoneNumber;
+  final String verificationToken;
+
+  const SignupNamePage(
+      {super.key, required this.phoneNumber, required this.verificationToken});
 
   @override
   State<SignupNamePage> createState() => _SignupNamePageState();
@@ -27,12 +39,42 @@ class _SignupNamePageState extends State<SignupNamePage> {
     });
   }
 
-  void _onContinue() {
+  void _onContinue() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       return;
     }
-
+    LoaderAlert().show(context);
+    var body = await SignupBody().generate(widget.verificationToken, name, "");
+    var response =
+        await Request.post(url: "/signup/complete/", body: body).send(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    if (response == null) {
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] != true) {
+      Alert(
+        description: "product.signup.name.failed",
+        type: AlertType.error,
+      ).show(context);
+      return;
+    }
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "user", value: responseBody["user"]);
+    await storage.write(
+        key: "authentication_token",
+        value: responseBody["authentication_token"]);
+    await storage.write(
+        key: "refresh_token", value: responseBody["refresh_token"]);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductPage(),
+      ),
+    );
   }
 
   OutlineInputBorder _buildInputBorder() {

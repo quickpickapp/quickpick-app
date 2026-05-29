@@ -11,7 +11,6 @@ import 'package:quickpick/notification/notification.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
 import 'package:quickpick/product/signup/signup_legal_page.dart';
-import 'package:quickpick/product/signup/signup_name_page.dart';
 import 'package:quickpick/request/request.dart';
 import 'package:quickpick/statistic/statistic.dart';
 
@@ -32,9 +31,8 @@ class QuickPickApp extends StatefulWidget {
   State<QuickPickApp> createState() => _QuickPickAppState();
 }
 
-class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver {
-  bool _initialized = false;
-
+class _QuickPickAppState extends State<QuickPickApp>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -59,8 +57,9 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(
-                create: (_) =>
-                    ProfileLanguageState(languageSnapshot.data ?? "de")),
+              create: (_) =>
+                  ProfileLanguageState(languageSnapshot.data ?? "de"),
+            ),
           ],
           child: LocaleBuilder(
             builder: (locale) => MaterialApp(
@@ -69,16 +68,11 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
                 useMaterial3: true,
                 primaryColor: Colors.black,
                 colorScheme: ColorScheme.light(
-                    primary: Color(0xFF2196F3), surface: Color(0xFFE8E8E8)),
+                  primary: Color(0xFF2196F3),
+                  surface: Color(0xFFE8E8E8),
+                ),
               ),
-              home: Builder(
-                builder: (context) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    checkInitialization(context);
-                  });
-                  return SignupLegalPage();
-                },
-              ),
+              home: AppRouter(),
               debugShowCheckedModeBanner: false,
               localizationsDelegates: Locales.delegates,
               supportedLocales: Locales.supportedLocales,
@@ -93,25 +87,56 @@ class _QuickPickAppState extends State<QuickPickApp> with WidgetsBindingObserver
 
   Future<String> findLanguage() async {
     const storage = FlutterSecureStorage();
-    final language = await storage.read(key: "language") ?? "de";
-    return language;
+    return await storage.read(key: "language") ?? "de";
+  }
+}
+
+class AppRouter extends StatefulWidget {
+  const AppRouter({super.key});
+
+  @override
+  State<AppRouter> createState() => _AppRouterState();
+}
+
+class _AppRouterState extends State<AppRouter> {
+  late final Future<bool> _authFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _authFuture = _initialize();
   }
 
-  void checkInitialization(context) async {
-    if (_initialized) {
-      return;
-    }
-    _initialized = true;
+  Future<bool> _initialize() async {
     await QuickPickStatistic().keep(context);
-    await checkAuthorization(context);
+    return await _isAuthorized();
   }
 
-  Future<void> checkAuthorization(context) async {
+  Future<bool> _isAuthorized() async {
     const storage = FlutterSecureStorage();
-    var email = await storage.read(key: "email");
-    if (email == null) {
-      return;
+    final user = await storage.read(key: "user");
+    if (user == null) {
+      return false;
     }
-    await Request.get(url: "/authorized/").send(context);
+
+    final response = await Request.get(url: "/authorized/").send(context);
+    return response != null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _authFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final isAuthorized = snapshot.data ?? false;
+        return isAuthorized ? ProductPage() : SignupLegalPage();
+      },
+    );
   }
 }

@@ -118,7 +118,6 @@ class _AppRouterState extends State<AppRouter> {
     if (user == null) {
       return false;
     }
-
     final response = await Request.get(url: "/authorized/").send(context);
     return response != null;
   }

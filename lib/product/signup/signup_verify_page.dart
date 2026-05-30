@@ -40,8 +40,12 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -126,6 +130,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
           ),
         ),
       );
+      return;
     }
     const storage = FlutterSecureStorage();
     await storage.write(key: "user", value: responseBody["user"]);

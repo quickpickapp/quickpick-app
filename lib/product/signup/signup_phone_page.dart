@@ -47,15 +47,13 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }
-    if (response == null) {
+    if (response == null || response.statusCode == 429) {
+      _showFailedAlert();
       return;
     }
     var responseBody = jsonDecode(response.body);
     if (responseBody["success"] != true) {
-      Alert(
-        description: "product.signup.phone.failed",
-        type: AlertType.error,
-      ).show(context);
+      _showFailedAlert();
       return;
     }
     Navigator.push(
@@ -64,6 +62,13 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
         builder: (context) => SignupVerifyPage(phoneNumber: phone),
       ),
     );
+  }
+
+  void _showFailedAlert() {
+    Alert(
+      description: "product.signup.phone.failed",
+      type: AlertType.error,
+    ).show(context);
   }
 
   OutlineInputBorder _buildInputBorder() {

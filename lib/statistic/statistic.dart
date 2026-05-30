@@ -23,7 +23,7 @@ class QuickPickStatistic {
 
   Future<void> sendAppInstallation(context) async {
     const storage = FlutterSecureStorage();
-    if (await storage.read(key: "alreadyOpened") != null) {
+    if (await storage.read(key: "installed") != null) {
       return;
     }
     var body = createStatisticBody();
@@ -37,7 +37,7 @@ class QuickPickStatistic {
     if (!responseBody["success"]) {
       return;
     }
-    await storage.write(key: "alreadyOpened", value: "true");
+    await storage.write(key: "installed", value: "true");
   }
 
   Map<String, Object> createStatisticBody() {

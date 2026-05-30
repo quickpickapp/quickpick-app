@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:quickpick/product/pick/pick_preview_page.dart';
 
 class PickCreatePage extends StatefulWidget {
   const PickCreatePage({super.key});
@@ -27,7 +28,9 @@ class _PickCreatePageState extends State<PickCreatePage> {
 
   Future<void> _initCamera() async {
     _cameras = await availableCameras();
-    if (_cameras.isEmpty) return;
+    if (_cameras.isEmpty) {
+      return;
+    }
 
     _controller = CameraController(
       _cameras[_selectedCamera],
@@ -46,12 +49,30 @@ class _PickCreatePageState extends State<PickCreatePage> {
   }
 
   Future<void> _flipCamera() async {
-    if (_cameras.length < 2) return;
+    if (_cameras.length < 2) {
+      return;
+    }
     _selectedCamera = _selectedCamera == 0 ? 1 : 0;
 
     await _controller?.dispose();
     setState(() => _isInitialized = false);
     await _initCamera();
+  }
+
+  Future<void> _takePicture() async {
+    if (_controller == null || !_isInitialized) {
+      return;
+    }
+    final image = await _controller!.takePicture();
+    if (!mounted) {
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PickPreviewPage(imagePath: image.path),
+      ),
+    );
   }
 
   @override
@@ -67,7 +88,6 @@ class _PickCreatePageState extends State<PickCreatePage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Camera preview with pinch-to-zoom
           if (_isInitialized && _controller != null)
             GestureDetector(
               onScaleStart: (_) => _baseZoom = _currentZoom,
@@ -81,8 +101,6 @@ class _PickCreatePageState extends State<PickCreatePage> {
             )
           else
             const Center(child: CircularProgressIndicator(color: Colors.white)),
-
-          // Zoom level badge
           if (_isInitialized)
             Positioned(
               bottom: 130,
@@ -108,8 +126,6 @@ class _PickCreatePageState extends State<PickCreatePage> {
                 ),
               ),
             ),
-
-          // Controls overlay
           SafeArea(
             child: Column(
               children: [
@@ -136,12 +152,7 @@ class _PickCreatePageState extends State<PickCreatePage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 40),
                   child: GestureDetector(
-                    onTap: () async {
-                      if (_controller == null || !_isInitialized) return;
-                      final image = await _controller!.takePicture();
-                      debugPrint('Photo saved: ${image.path}');
-                      Navigator.pop(context);
-                    },
+                    onTap: _takePicture,
                     child: Container(
                       width: 72,
                       height: 72,

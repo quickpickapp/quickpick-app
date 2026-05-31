@@ -4,9 +4,7 @@ import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/product/profile/profile_page.dart';
 
 class PickListEmptyContent extends StatelessWidget {
-  final Function signInCallback;
-
-  const PickListEmptyContent({super.key, required this.signInCallback});
+  const PickListEmptyContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +38,7 @@ class PickListEmptyContent extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfilePage(
-                                signInCallback: signInCallback),
+                            builder: (context) => ProfilePage(),
                           ),
                         );
                       },

@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/product/profile/profile_page.dart';
 
 class HeaderAccountButton extends StatefulWidget
     implements PreferredSizeWidget {
-  final Function signInCallback;
-
-  const HeaderAccountButton({super.key, required this.signInCallback});
+  const HeaderAccountButton({super.key});
 
   @override
   State<HeaderAccountButton> createState() => _HeaderAccountButtonState();
@@ -26,12 +23,7 @@ class _HeaderAccountButtonState extends State<HeaderAccountButton> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfilePage(
-              signInCallback: () {
-                widget.signInCallback();
-                setState(() {});
-              },
-            ),
+            builder: (context) => ProfilePage(),
           ),
         );
       },

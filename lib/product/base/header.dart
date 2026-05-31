@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quickpick/product/base/header_account_button.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
-  final Function signInCallback;
-
-  const Header({super.key, required this.signInCallback});
+  const Header({super.key});
 
   @override
   State<Header> createState() => _HeaderState();
@@ -25,7 +23,7 @@ class _HeaderState extends State<Header> {
       ),
       titleSpacing: 10,
       actions: <Widget>[
-        HeaderAccountButton(signInCallback: widget.signInCallback)
+        HeaderAccountButton()
       ],
       automaticallyImplyLeading: false,
       bottom: PreferredSize(

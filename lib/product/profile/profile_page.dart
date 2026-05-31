@@ -7,9 +7,7 @@ import 'package:quickpick/product/profile/profile_language_selection.dart';
 import 'package:quickpick/product/profile/profile_notification_toggle.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Function signInCallback;
-
-  const ProfilePage({super.key, required this.signInCallback});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();

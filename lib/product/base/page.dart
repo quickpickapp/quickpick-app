@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quickpick/product/base/header.dart';
 import 'package:quickpick/product/base/navigator.dart';
 import 'package:quickpick/product/base/page_body.dart';
-import 'package:quickpick/product/friend/friend_list_body.dart';
+import 'package:quickpick/product/friend/friends_body.dart';
 import 'package:quickpick/product/pick/pick_button.dart';
 import 'package:quickpick/product/pick/pick_list_body.dart';
 
@@ -18,7 +18,7 @@ class ProductPage extends StatefulWidget {
 class ProductPageState extends State<ProductPage> {
   final List<ProductPageBody> pageBodies = [
     PickListBody(),
-    FriendListBody(),
+    FriendsBody(),
   ];
   int _selectedIndex = 0;
 
@@ -42,9 +42,7 @@ class ProductPageState extends State<ProductPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: Header(
-          signInCallback: () => {},
-        ),
+        appBar: Header(),
         bottomNavigationBar: ProductNavigator(
           selectedIndex: _selectedIndex,
           updateIndex: _onItemTapped,

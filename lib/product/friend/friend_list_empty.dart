@@ -1,66 +1,79 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:quickpick/localization/locale_text.dart';
-import 'package:quickpick/product/profile/profile_page.dart';
 
 class FriendListEmptyContent extends StatelessWidget {
-  final Function signInCallback;
+  final VoidCallback? onDiscoverTap;
 
-  const FriendListEmptyContent({super.key, required this.signInCallback});
+  const FriendListEmptyContent({super.key, this.onDiscoverTap});
 
   @override
   Widget build(BuildContext context) {
-    const storage = FlutterSecureStorage();
-    return FutureBuilder<String?>(
-      future: storage.read(key: "email"),
-      builder: (context, AsyncSnapshot<String?> email) {
-        return Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(top: 20, bottom: 75),
-          child: Stack(
-            children: [
-              email.data == null || email.data == ""
-                  ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child:
-                    LocaleText("product.friend.list.new.description"),
-                  ),
-                  Center(
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 0),
-                        minimumSize: Size(50, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        alignment: Alignment.centerLeft,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfilePage(
-                                signInCallback: signInCallback),
-                          ),
-                        );
-                      },
-                      child: LocaleText(
-                        "product.friend.list.new.login",
-                        style: TextStyle(
-                          color: Colors.indigo,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-                  : SizedBox.shrink(),
-            ],
-          ),
-        );
-      },
+    final color = Colors.indigo;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                CupertinoIcons.person_2,
+                size: 38,
+                color: color.withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              "Noch keine Freunde",
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Entdecke Personen, die du kennst, und füge sie als Freunde hinzu.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black45,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: onDiscoverTap,
+              style: FilledButton.styleFrom(
+                backgroundColor: color,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const Icon(CupertinoIcons.person_badge_plus, size: 18),
+              label: const Text(
+                "Personen entdecken",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

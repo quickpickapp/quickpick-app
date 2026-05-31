@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/google/google_sign_in.dart';
 import 'package:quickpick/localization/locale_notifier.dart';
 import 'package:quickpick/localization/locales.dart';
@@ -108,6 +109,7 @@ class _AppRouterState extends State<AppRouter> {
   }
 
   Future<bool> _initialize() async {
+    await Crypto().ensureKeyPair();
     await QuickPickStatistic().keep(context);
     return await _isAuthorized();
   }

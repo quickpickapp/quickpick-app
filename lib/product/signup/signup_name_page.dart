@@ -45,7 +45,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
       return;
     }
     LoaderAlert().show(context);
-    var body = await SignupBody().generate(widget.verificationToken, name, "");
+    var body = await SignupBody().generate(widget.verificationToken, name);
     var response =
         await Request.post(url: "/signup/complete/", body: body).send(context);
     if (Navigator.canPop(context)) {

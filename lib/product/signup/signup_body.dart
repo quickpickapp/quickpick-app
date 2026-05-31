@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:quickpick/crypto/crypto.dart';
 
 class SignupBody {
-  Future<Map<String, Object>> generate(
-      verificationToken, name, publicKey) async {
+  Future<Map<String, Object>> generate(verificationToken, name) async {
+    var publicKey = await Crypto().getPublicKey();
     var body = <String, Object>{
       "verification_token": verificationToken,
       "name": name,

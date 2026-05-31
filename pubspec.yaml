@@ -61,6 +61,8 @@ dependencies:
   get_time_ago: ^2.3.1
   sign_in_with_apple: ^7.0.1
   camera: ^0.12.0+1
+  fast_rsa: ^3.8.6
+  cryptography: ^2.9.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3

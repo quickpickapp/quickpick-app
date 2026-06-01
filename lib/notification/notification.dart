@@ -56,10 +56,10 @@ Future<void> _showLocalNotification(
     'campaign': campaign,
   });
   await flutterLocalNotificationsPlugin.show(
-    0,
-    title,
-    body,
-    notificationDetails,
+    id: 0,
+    title: title,
+    body: body,
+    notificationDetails: notificationDetails,
     payload: payload,
   );
 }
@@ -100,7 +100,7 @@ class QuickPickNotification {
       iOS: iosInitialize,
     );
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
         await _processNotificationClick(response);
       },

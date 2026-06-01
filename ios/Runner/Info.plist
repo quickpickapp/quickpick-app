@@ -112,6 +112,8 @@
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
 		<key>NSCameraUsageDescription</key>
-    <string>Camera access is required for live preview</string>
+    <string>Camera access is required for pick creation</string>
+    <key>NSContactsUsageDescription</key>
+    <string>We need access to your contacts to discover new friends</string>
 	</dict>
 </plist>

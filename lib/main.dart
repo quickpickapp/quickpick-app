@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:quickpick/crypto/crypto.dart';
-import 'package:quickpick/google/google_sign_in.dart';
 import 'package:quickpick/localization/locale_notifier.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/notification/notification.dart';
@@ -21,7 +20,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
   await QuickPickNotification(navigatorKey: navigatorKey).setup();
-  await QuickPickGoogleSignIn().setup();
   runApp(QuickPickApp());
 }
 

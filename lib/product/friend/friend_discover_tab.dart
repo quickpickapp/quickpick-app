@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:quickpick/request/request.dart';
 
 class FriendDiscoverTab extends StatefulWidget {
   final TextEditingController searchController;
@@ -11,18 +14,85 @@ class FriendDiscoverTab extends StatefulWidget {
 }
 
 class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
-  // TODO: Hook up to your actual search / user-discovery service
-  final List<Map<String, String>> _results = [];
-  bool _isSearching = false;
+  List<Map<String, dynamic>> _suggestions = [];
+  bool _isLoading = false;
+  bool _hasFetched = false;
 
-  Future<void> _search(String query) async {
-    if (query.isEmpty) return;
-    setState(() => _isSearching = true);
+  @override
+  void initState() {
+    super.initState();
+    _discoverFriends();
+  }
 
-    // TODO: Replace with real API call
-    await Future.delayed(const Duration(milliseconds: 500));
+  Future<void> _discoverFriends() async {
+    setState(() => _isLoading = true);
 
-    setState(() => _isSearching = false);
+    final List<String> contacts = await _loadPhoneContacts();
+
+    if (contacts.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _hasFetched = true;
+      });
+      return;
+    }
+
+    final response = await Request.post(
+      url: "/friendship/discover/",
+      body: {"contacts": contacts},
+    ).send(context);
+
+    if (response == null) {
+      setState(() {
+        _isLoading = false;
+        _hasFetched = true;
+      });
+      return;
+    }
+
+    final responseBody = jsonDecode(response.body);
+
+    if (responseBody["success"] == true) {
+      final List<dynamic> raw = responseBody["data"]["suggestions"] ?? [];
+      setState(() {
+        _suggestions = raw.cast<Map<String, dynamic>>();
+      });
+    }
+
+    setState(() {
+      _isLoading = false;
+      _hasFetched = true;
+    });
+  }
+
+  Future<List<String>> _loadPhoneContacts() async {
+    if (await FlutterContacts.permissions.request(PermissionType.read) !=
+        PermissionStatus.granted) {
+      return [];
+    }
+    final contacts = await FlutterContacts.getAll(
+      properties: {ContactProperty.phone},
+    );
+    return contacts
+        .expand((c) =>
+            c.phones.map((p) => p.number.replaceAll(RegExp(r'[\s\-()]'), '')))
+        .toList();
+  }
+
+  Future<void> _sendFriendRequest(String userId) async {
+    final response = await Request.post(
+      url: "/friendship/request/",
+      body: {"user_id": userId},
+    ).send(context);
+
+    if (response == null) return;
+
+    final responseBody = jsonDecode(response.body);
+    if (responseBody["success"] == true) {
+      setState(() {
+        _suggestions.removeWhere((s) => s["id"].toString() == userId);
+      });
+    }
   }
 
   @override
@@ -33,39 +103,45 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
           padding: const EdgeInsets.all(12),
           child: CupertinoSearchTextField(
             controller: widget.searchController,
-            onSubmitted: _search,
-            placeholder: "Benutzernamen suchen …",
+            placeholder: "Aus Kontakten vorgeschlagen …",
+            enabled:
+                false, // Discovery ist kontaktbasiert, kein manuelles Suchen
           ),
         ),
-        if (_isSearching) const CupertinoActivityIndicator(),
-        Expanded(
-          child: _results.isEmpty
-              ? const Center(
-            child: Text(
-              "Suche nach Benutzernamen,\num neue Freunde zu finden.",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
-            ),
+        if (_isLoading)
+          const Padding(
+            padding: EdgeInsets.only(top: 32),
+            child: CupertinoActivityIndicator(),
           )
-              : ListView.builder(
-            itemCount: _results.length,
-            itemBuilder: (context, index) {
-              final user = _results[index];
-              return ListTile(
-                leading: const CircleAvatar(
-                    child: Icon(CupertinoIcons.person)),
-                title: Text(user["name"] ?? ""),
-                trailing: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    // TODO: send friend request
-                  },
-                  child: const Icon(CupertinoIcons.person_badge_plus),
-                ),
-              );
-            },
+        else
+          Expanded(
+            child: !_hasFetched || _suggestions.isEmpty
+                ? const Center(
+                    child: Text(
+                      "Keine neuen Vorschläge aus\ndeinen Kontakten gefunden.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _suggestions.length,
+                    itemBuilder: (context, index) {
+                      final user = _suggestions[index];
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          child: Icon(CupertinoIcons.person),
+                        ),
+                        title: Text(user["name"] ?? ""),
+                        trailing: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () =>
+                              _sendFriendRequest(user["id"].toString()),
+                          child: const Icon(CupertinoIcons.person_badge_plus),
+                        ),
+                      );
+                    },
+                  ),
           ),
-        ),
       ],
     );
   }

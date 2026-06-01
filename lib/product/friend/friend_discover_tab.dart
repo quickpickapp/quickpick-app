@@ -53,7 +53,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
     final responseBody = jsonDecode(response.body);
 
     if (responseBody["success"] == true) {
-      final List<dynamic> raw = responseBody["data"]["suggestions"] ?? [];
+      final List<dynamic> raw = responseBody["suggestions"] ?? [];
       setState(() {
         _suggestions = raw.cast<Map<String, dynamic>>();
       });
@@ -81,8 +81,8 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
 
   Future<void> _sendFriendRequest(String userId) async {
     final response = await Request.post(
-      url: "/friendship/request/",
-      body: {"user_id": userId},
+      url: "/friendship/invitation/create/",
+      body: {"target": userId},
     ).send(context);
 
     if (response == null) return;

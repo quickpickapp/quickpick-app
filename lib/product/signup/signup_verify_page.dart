@@ -78,10 +78,16 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
       }
     }
 
+    final isNowValid = _fullCode.length == _codeLength &&
+        _fullCode.contains(RegExp(r'^\d{6}$'));
+
     setState(() {
-      _isCodeValid = _fullCode.length == _codeLength &&
-          _fullCode.contains(RegExp(r'^\d{6}$'));
+      _isCodeValid = isNowValid;
     });
+
+    if (isNowValid) {
+      _onContinue();
+    }
   }
 
   void _onKeyEvent(int index, KeyEvent event) {
@@ -238,38 +244,50 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                             return SizedBox(
                               width: 44,
                               height: 56,
-                              child: KeyboardListener(
-                                focusNode: FocusNode(),
-                                onKeyEvent: (event) =>
-                                    _onKeyEvent(index, event),
-                                child: TextField(
-                                  controller: _controllers[index],
-                                  focusNode: _focusNodes[index],
-                                  keyboardType: TextInputType.number,
-                                  textAlign: TextAlign.center,
-                                  maxLength: 1,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                    LengthLimitingTextInputFormatter(6),
-                                  ],
-                                  onChanged: (value) =>
-                                      _onDigitChanged(index, value),
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Visible box with centered digit
+                                  Container(
+                                    width: 44,
+                                    height: 56,
+                                    decoration: _buildBoxDecoration(index),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      _controllers[index].text,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
-                                  decoration: InputDecoration(
-                                    counterText: '',
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 14),
-                                    border: _buildBoxBorder(index),
-                                    enabledBorder: _buildBoxBorder(index),
-                                    focusedBorder: _buildBoxBorder(index),
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
+                                  // Invisible TextField on top to capture input
+                                  KeyboardListener(
+                                    focusNode: FocusNode(),
+                                    onKeyEvent: (event) => _onKeyEvent(index, event),
+                                    child: TextField(
+                                      controller: _controllers[index],
+                                      focusNode: _focusNodes[index],
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(1),
+                                      ],
+                                      onChanged: (value) => _onDigitChanged(index, value),
+                                      style: const TextStyle(color: Colors.transparent),
+                                      cursorColor: Colors.transparent,
+                                      decoration: const InputDecoration(
+                                        counterText: '',
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        filled: false,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
                             );
                           }),
@@ -364,17 +382,14 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
     );
   }
 
-  OutlineInputBorder _buildBoxBorder(int index) {
+  BoxDecoration _buildBoxDecoration(int index) {
     final isFilled = _controllers[index].text.isNotEmpty;
-    Color borderColor;
-    if (!isFilled) {
-      borderColor = Colors.grey;
-    } else {
-      borderColor = Colors.indigo;
-    }
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: borderColor, width: 2.0),
+    final borderColor = isFilled ? Colors.indigo : Colors.grey;
+
+    return BoxDecoration(
+      color: Colors.grey[200],
       borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: borderColor, width: 2.0),
     );
   }
 }

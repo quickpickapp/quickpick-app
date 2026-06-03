@@ -33,11 +33,24 @@
   "product.pick.list.search": "Search for pick...",
   "product.pick.list.empty": "No picks found.",
 
+  "product.friend.tab.friends": "Friends",
+  "product.friend.tab.discover": "Discover",
+  "product.friend.tab.invitations": "Invitations",
+
+  "product.friend.search": "Search for friends...",
+
   "product.friend.list.label": "Friends",
-  "product.friend.list.new.description": "You already had picks?",
-  "product.friend.list.new.login": "Sign in now",
-  "product.friend.list.search": "Search for friend...",
-  "product.friend.list.empty": "No friends found.",
+  "product.friend.list.no.results": "No results",
+  "product.friend.list.empty.title": "No friends yet",
+  "product.friend.list.empty.subtitle": "Discover people you know and add them as friends.",
+  "product.friend.list.empty.action": "Discover people",
+
+  "product.friend.remove.confirm": "Are you sure you want to remove this friend?",
+  "product.friend.remove.confirm.button": "Remove",
+
+  "product.friend.discover.empty": "No new suggestions from\nyour contacts found.",
+
+  "product.friend.invitations.empty": "No open invitations.",
 
   "product.profile.title": "Profile",
   "product.profile.language": "Language",

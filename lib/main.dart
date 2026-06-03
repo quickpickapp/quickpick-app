@@ -129,7 +129,7 @@ class _AppRouterState extends State<AppRouter> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(child: CircularProgressIndicator(color: Colors.indigo)),
           );
         }
 

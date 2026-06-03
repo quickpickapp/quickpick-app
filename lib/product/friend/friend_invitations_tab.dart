@@ -1,10 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/request/request.dart';
 
 class FriendInvitationsTab extends StatefulWidget {
-  const FriendInvitationsTab({super.key});
+  final TextEditingController searchController;
+  final ValueChanged<int>? onInvitationCountChanged;
+
+  const FriendInvitationsTab({
+    super.key,
+    required this.searchController,
+    this.onInvitationCountChanged,
+  });
 
   @override
   State<FriendInvitationsTab> createState() => _FriendInvitationsTabState();
@@ -17,7 +26,14 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
   @override
   void initState() {
     super.initState();
+    widget.searchController.addListener(() => setState(() {}));
     _loadInvitations();
+  }
+
+  @override
+  void dispose() {
+    widget.searchController.removeListener(() => setState(() {}));
+    super.dispose();
   }
 
   Future<void> _loadInvitations() async {
@@ -29,10 +45,12 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
 
     final body = jsonDecode(response.body);
     if (body["success"] == true) {
+      final invitations = List<Map<String, dynamic>>.from(body["invitations"]);
       setState(() {
-        _invitations = List<Map<String, dynamic>>.from(body["invitations"]);
+        _invitations = invitations;
         _isLoading = false;
       });
+      widget.onInvitationCountChanged?.call(invitations.length);
     }
   }
 
@@ -51,6 +69,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
               (i) => i["invitation_id"].toString() == invitationId,
         );
       });
+      widget.onInvitationCountChanged?.call(_invitations.length);
     }
   }
 
@@ -69,50 +88,77 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
               (i) => i["invitation_id"].toString() == invitationId,
         );
       });
+      widget.onInvitationCountChanged?.call(_invitations.length);
     }
+  }
+
+  List<Map<String, dynamic>> get _filteredInvitations {
+    final query = widget.searchController.text.toLowerCase();
+    if (query.isEmpty) return _invitations;
+    return _invitations
+        .where((i) =>
+        (i["inviter_name"] as String? ?? "").toLowerCase().contains(query))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CupertinoActivityIndicator());
-    }
-
-    if (_invitations.isEmpty) {
-      return const Center(
-        child: Text(
-          "Keine offenen Einladungen.",
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      itemCount: _invitations.length,
-      itemBuilder: (context, index) {
-        final invitation = _invitations[index];
-        final invitationId = invitation["invitation_id"].toString();
-
-        return ListTile(
-          leading: const CircleAvatar(child: Icon(CupertinoIcons.person)),
-          title: Text(invitation["inviter_name"] ?? ""),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.check_mark_circled,
-                    color: Colors.green),
-                onPressed: () => _acceptInvitation(invitationId),
-              ),
-              IconButton(
-                icon: const Icon(CupertinoIcons.xmark_circle,
-                    color: Colors.red),
-                onPressed: () => _declineInvitation(invitationId),
-              ),
-            ],
+    return Column(
+      children: [
+        if (!_isLoading && _invitations.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            child: CupertinoSearchTextField(
+              controller: widget.searchController,
+              placeholder: Locales.string(context, "product.friend.search"),
+              onChanged: (_) => setState(() {}),
+            ),
           ),
-        );
-      },
+        if (_isLoading)
+          const Expanded(
+            child: Center(child: CupertinoActivityIndicator()),
+          )
+        else if (_filteredInvitations.isEmpty)
+          Expanded(
+            child: Center(
+              child: LocaleText(
+                "product.friend.invitations.empty",
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+          )
+        else
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredInvitations.length,
+              itemBuilder: (context, index) {
+                final invitation = _filteredInvitations[index];
+                final invitationId = invitation["invitation_id"].toString();
+
+                return ListTile(
+                  leading:
+                  const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                  title: Text(invitation["inviter_name"] ?? ""),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(CupertinoIcons.check_mark_circled,
+                            color: Colors.green),
+                        onPressed: () => _acceptInvitation(invitationId),
+                      ),
+                      IconButton(
+                        icon: const Icon(CupertinoIcons.xmark_circle,
+                            color: Colors.red),
+                        onPressed: () => _declineInvitation(invitationId),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+      ],
     );
   }
 }

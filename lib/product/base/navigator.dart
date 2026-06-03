@@ -57,7 +57,12 @@ class _ProductNavigatorState extends State<ProductNavigator> {
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.lerp(Colors.black, _color, 0.8),
             currentIndex: widget.selectedIndex,
-            onTap: widget.updateIndex,
+            onTap: (index) {
+              setState(() {
+                notificationCounts[index] = 0;
+              });
+              widget.updateIndex(index);
+            },
             unselectedFontSize: 13,
             selectedFontSize: 13,
             selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -111,7 +116,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
         ),
       ];
 
-      if (count != null && count > 0) {
+      if (count != null && count != 0) {
         iconChildren.add(createNotificationBadge(count));
       }
 
@@ -123,27 +128,44 @@ class _ProductNavigatorState extends State<ProductNavigator> {
     return items;
   }
 
-  Widget createNotificationBadge(count) {
+  Widget createNotificationBadge(int count) {
+    if (count == -1) {
+      return Positioned(
+        right: 0,
+        top: 0,
+        child: Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: Colors.red,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 1),
+          ),
+        ),
+      );
+    }
     return Positioned(
       right: 0,
       top: 0,
       child: Container(
-        width: count < 10 ? 16 : null,
-        height: 16,
+        width: count < 10 ? 20 : null,
+        height: 20,
         padding: count < 10
             ? EdgeInsets.zero
             : const EdgeInsets.symmetric(horizontal: 4),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.white, width: 1)),
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.white, width: 1),
+        ),
         child: Text(
           count.toString(),
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 10,
-            height: 1, // helps vertically center text
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            height: 1,
           ),
           textAlign: TextAlign.center,
         ),

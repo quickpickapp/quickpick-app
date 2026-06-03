@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/localization/locale_text.dart';
 
 class FriendListEmptyContent extends StatelessWidget {
   final VoidCallback? onDiscoverTap;
@@ -30,8 +31,8 @@ class FriendListEmptyContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              "Noch keine Freunde",
+            LocaleText(
+              "product.friend.list.empty.title",
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -39,8 +40,8 @@ class FriendListEmptyContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              "Entdecke Personen, die du kennst, und füge sie als Freunde hinzu.",
+            LocaleText(
+              "product.friend.list.empty.subtitle",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -63,8 +64,8 @@ class FriendListEmptyContent extends StatelessWidget {
                 ),
               ),
               icon: const Icon(CupertinoIcons.person_badge_plus, size: 18),
-              label: const Text(
-                "Personen entdecken",
+              label: const LocaleText(
+                "product.friend.list.empty.action",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,

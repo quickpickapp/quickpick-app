@@ -2,12 +2,19 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/request/request.dart';
 
 class FriendDiscoverTab extends StatefulWidget {
   final TextEditingController searchController;
+  final ValueChanged<bool>? onHasSuggestions;
 
-  const FriendDiscoverTab({super.key, required this.searchController});
+  const FriendDiscoverTab({
+    super.key,
+    required this.searchController,
+    this.onHasSuggestions,
+  });
 
   @override
   State<FriendDiscoverTab> createState() => _FriendDiscoverTabState();
@@ -21,7 +28,14 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
   @override
   void initState() {
     super.initState();
+    widget.searchController.addListener(() => setState(() {}));
     _discoverFriends();
+  }
+
+  @override
+  void dispose() {
+    widget.searchController.removeListener(() => setState(() {}));
+    super.dispose();
   }
 
   Future<void> _discoverFriends() async {
@@ -34,6 +48,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
         _isLoading = false;
         _hasFetched = true;
       });
+      widget.onHasSuggestions?.call(false);
       return;
     }
 
@@ -47,6 +62,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
         _isLoading = false;
         _hasFetched = true;
       });
+      widget.onHasSuggestions?.call(false);
       return;
     }
 
@@ -57,6 +73,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
       setState(() {
         _suggestions = raw.cast<Map<String, dynamic>>();
       });
+      widget.onHasSuggestions?.call(_suggestions.isNotEmpty);
     }
 
     setState(() {
@@ -75,7 +92,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
     );
     return contacts
         .expand((c) =>
-            c.phones.map((p) => p.number.replaceAll(RegExp(r'[\s\-()]'), '')))
+        c.phones.map((p) => p.number.replaceAll(RegExp(r'[\s\-()]'), '')))
         .toList();
   }
 
@@ -92,55 +109,64 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
       setState(() {
         _suggestions.removeWhere((s) => s["id"].toString() == userId);
       });
+      widget.onHasSuggestions?.call(_suggestions.isNotEmpty);
     }
+  }
+
+  List<Map<String, dynamic>> get _filteredSuggestions {
+    final query = widget.searchController.text.toLowerCase();
+    if (query.isEmpty) return _suggestions;
+    return _suggestions
+        .where((s) => (s["name"] as String? ?? "").toLowerCase().contains(query))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: CupertinoSearchTextField(
-            controller: widget.searchController,
-            placeholder: "Aus Kontakten vorgeschlagen …",
-            enabled:
-                false, // Discovery ist kontaktbasiert, kein manuelles Suchen
+        if (!_isLoading && _suggestions.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            child: CupertinoSearchTextField(
+              controller: widget.searchController,
+              placeholder: Locales.string(context, "product.friend.search"),
+            ),
           ),
-        ),
         if (_isLoading)
-          const Padding(
-            padding: EdgeInsets.only(top: 32),
-            child: CupertinoActivityIndicator(),
+          const Expanded(
+            child: Center(
+              child: CupertinoActivityIndicator(),
+            ),
           )
         else
           Expanded(
-            child: !_hasFetched || _suggestions.isEmpty
-                ? const Center(
-                    child: Text(
-                      "Keine neuen Vorschläge aus\ndeinen Kontakten gefunden.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  )
+            child: !_hasFetched || _filteredSuggestions.isEmpty
+                ? Center(
+              child: LocaleText(
+                "product.friend.discover.empty",
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            )
                 : ListView.builder(
-                    itemCount: _suggestions.length,
-                    itemBuilder: (context, index) {
-                      final user = _suggestions[index];
-                      return ListTile(
-                        leading: const CircleAvatar(
-                          child: Icon(CupertinoIcons.person),
-                        ),
-                        title: Text(user["name"] ?? ""),
-                        trailing: CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () =>
-                              _sendFriendRequest(user["id"].toString()),
-                          child: const Icon(CupertinoIcons.person_badge_plus),
-                        ),
-                      );
-                    },
+              itemCount: _filteredSuggestions.length,
+              itemBuilder: (context, index) {
+                final user = _filteredSuggestions[index];
+                return ListTile(
+                  leading: const CircleAvatar(
+                    child: Icon(CupertinoIcons.person),
                   ),
+                  title: Text(user["name"] ?? ""),
+                  trailing: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () =>
+                        _sendFriendRequest(user["id"].toString()),
+                    child: const Icon(CupertinoIcons.person_badge_plus),
+                  ),
+                );
+              },
+            ),
           ),
       ],
     );

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/product/base/page_body.dart';
 import 'package:quickpick/product/friend/friend_discover_tab.dart';
-import 'package:quickpick/product/friend/friend_list_tab.dart';
 import 'package:quickpick/product/friend/friend_invitations_tab.dart';
+import 'package:quickpick/product/friend/friend_list_tab.dart';
 import 'package:quickpick/request/request.dart';
 
 class FriendsBody extends ProductPageBody {

@@ -31,7 +31,9 @@
   "product.pick.list.new.description": "You already had picks?",
   "product.pick.list.new.login": "Sign in now",
   "product.pick.list.search": "Search for pick...",
-  "product.pick.list.empty": "No picks found.",
+  "product.pick.list.empty.title": "No picks found.",
+  "product.pick.list.empty.subtitle": "You don't have any picks right now.",
+  "product.pick.list.no.results": "No results.",
 
   "product.pick.preview.draw": "Draw",
   "product.pick.preview.text": "Text",
@@ -53,7 +55,7 @@
   "product.friend.remove.confirm": "Are you sure you want to remove this friend?",
   "product.friend.remove.confirm.button": "Remove",
 
-  "product.friend.discover.empty": "No new suggestions from\nyour contacts found.",
+  "product.friend.discover.empty": "No new suggestions found.",
 
   "product.friend.invitations.empty": "No open invitations.",
 

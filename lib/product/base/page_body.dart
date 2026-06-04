@@ -5,12 +5,11 @@ class PageBodyController {
 }
 
 abstract class ProductPageBody extends StatelessWidget {
-  ProductPageBody({
-    super.key,
-    required this.name,
-    required this.unselectedIcon,
-    required this.selectedIcon
-  });
+  ProductPageBody(
+      {super.key,
+      required this.name,
+      required this.unselectedIcon,
+      required this.selectedIcon});
 
   final String name;
   final IconData unselectedIcon;

@@ -35,7 +35,8 @@ class RequestRefresh {
       return false;
     }
     await storage.write(
-        key: "authentication_token", value: responseBody["authentication_token"]);
+        key: "authentication_token",
+        value: responseBody["authentication_token"]);
     await storage.write(
         key: "refresh_token", value: responseBody["refresh_token"]);
     return true;

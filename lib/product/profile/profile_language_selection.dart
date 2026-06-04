@@ -26,16 +26,20 @@ class ProfileLanguageSelection extends StatelessWidget {
   }
 
   createLanguageButton(languageState, flag, language, selected, context) {
+    var color = Theme.of(context).colorScheme.primary;
     return Container(
       margin: EdgeInsets.all(10),
       child: TextButton(
         style: TextButton.styleFrom(
-          backgroundColor: selected ? Colors.indigo[50] : Color(0xFFFAFAFA),
+          backgroundColor:
+              selected ? color.withValues(alpha: 0.1) : Color(0xFFFAFAFA),
           padding: EdgeInsets.all(10),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.0),
               side: BorderSide(
-                  color: selected ? Colors.indigo[100]! : Colors.grey[300]!,
+                  color: selected
+                      ? color.withValues(alpha: 0.2)
+                      : color.withValues(alpha: 0.3),
                   width: selected ? 2 : 1)),
         ),
         onPressed: () async {

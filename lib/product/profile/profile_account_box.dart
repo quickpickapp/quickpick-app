@@ -62,8 +62,8 @@ class ProfileAccountBox extends StatelessWidget {
                         children: [
                           ElevatedButton.icon(
                             style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStateProperty.all(Colors.indigo),
+                                backgroundColor: WidgetStateProperty.all(
+                                    Theme.of(context).colorScheme.primary),
                                 shape: WidgetStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(

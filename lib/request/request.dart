@@ -76,13 +76,18 @@ class Request {
     } else if (method == "POST") {
       try {
         Map<String, Object> body = Map.from(this.body);
-        final response = await post(Uri.parse(url),
-            headers: headers, body: jsonEncode(body))
-            .timeout(const Duration(seconds: _timeout));
-        _logRequest(method: method, headers: headers, body: body, response: response);
+        final response =
+            await post(Uri.parse(url), headers: headers, body: jsonEncode(body))
+                .timeout(const Duration(seconds: _timeout));
+        _logRequest(
+            method: method, headers: headers, body: body, response: response);
         return response;
       } catch (exception) {
-        _logRequest(method: method, headers: headers, body: this.body, exception: exception);
+        _logRequest(
+            method: method,
+            headers: headers,
+            body: this.body,
+            exception: exception);
         return null;
       }
     } else {

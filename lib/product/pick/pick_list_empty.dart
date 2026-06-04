@@ -19,40 +19,40 @@ class PickListEmptyContent extends StatelessWidget {
             children: [
               email.data == null || email.data == ""
                   ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child:
-                    LocaleText("product.pick.list.new.description"),
-                  ),
-                  Center(
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 0),
-                        minimumSize: Size(50, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        alignment: Alignment.centerLeft,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfilePage(),
-                          ),
-                        );
-                      },
-                      child: LocaleText(
-                        "product.pick.list.new.login",
-                        style: TextStyle(
-                          color: Colors.indigo,
-                          decoration: TextDecoration.underline,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child:
+                              LocaleText("product.pick.list.new.description"),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+                        Center(
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 0),
+                              minimumSize: Size(50, 30),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              alignment: Alignment.centerLeft,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(),
+                                ),
+                              );
+                            },
+                            child: LocaleText(
+                              "product.pick.list.new.login",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   : SizedBox.shrink(),
             ],
           ),

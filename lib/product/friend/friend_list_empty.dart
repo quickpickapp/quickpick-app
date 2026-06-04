@@ -9,7 +9,7 @@ class FriendListEmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.indigo;
+    final color = Theme.of(context).colorScheme.primary;
 
     return Center(
       child: Padding(

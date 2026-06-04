@@ -44,6 +44,7 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       backgroundColor: Color(0xFFFAFAFA),
       body: SafeArea(
@@ -109,8 +110,8 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                                     child: Checkbox(
                                       value: _accepted,
                                       onChanged: (val) => setState(
-                                              () => _accepted = val ?? false),
-                                      activeColor: Colors.indigo,
+                                          () => _accepted = val ?? false),
+                                      activeColor: theme.colorScheme.primary,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),
@@ -119,7 +120,7 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                                         width: 1.5,
                                       ),
                                       materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                          MaterialTapTargetSize.shrinkWrap,
                                       visualDensity: VisualDensity.compact,
                                     ),
                                   ),
@@ -141,11 +142,12 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                                                 "product.signup.legal.checkbox.terms"),
                                             style: TextStyle(
                                               fontSize: 13,
-                                              color: Colors.indigo,
+                                              color: theme.colorScheme.primary,
                                               fontWeight: FontWeight.w600,
                                               decoration:
-                                              TextDecoration.underline,
-                                              decorationColor: Colors.indigo,
+                                                  TextDecoration.underline,
+                                              decorationColor:
+                                                  theme.colorScheme.primary,
                                             ),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = _openTerms,
@@ -163,11 +165,12 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                                                 "product.signup.legal.checkbox.privacy"),
                                             style: TextStyle(
                                               fontSize: 13,
-                                              color: Colors.indigo,
+                                              color: theme.colorScheme.primary,
                                               fontWeight: FontWeight.w600,
                                               decoration:
-                                              TextDecoration.underline,
-                                              decorationColor: Colors.indigo,
+                                                  TextDecoration.underline,
+                                              decorationColor:
+                                                  theme.colorScheme.primary,
                                             ),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = _openPrivacyPolicy,
@@ -184,8 +187,9 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                               style: ButtonStyle(
                                 backgroundColor: WidgetStateProperty.all(
                                   _accepted
-                                      ? Colors.indigo
-                                      : Colors.indigo[200],
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.primary
+                                          .withValues(alpha: 0.5),
                                 ),
                                 shape: WidgetStateProperty.all(
                                   RoundedRectangleBorder(

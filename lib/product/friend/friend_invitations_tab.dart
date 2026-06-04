@@ -67,7 +67,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
     if (body["success"] == true) {
       setState(() {
         _invitations.removeWhere(
-              (i) => i["invitation_id"].toString() == invitationId,
+          (i) => i["invitation_id"].toString() == invitationId,
         );
       });
       widget.onInvitationCountChanged?.call(_invitations.length);
@@ -86,7 +86,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
     if (body["success"] == true) {
       setState(() {
         _invitations.removeWhere(
-              (i) => i["invitation_id"].toString() == invitationId,
+          (i) => i["invitation_id"].toString() == invitationId,
         );
       });
       widget.onInvitationCountChanged?.call(_invitations.length);
@@ -98,7 +98,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
     if (query.isEmpty) return _invitations;
     return _invitations
         .where((i) =>
-        (i["inviter_name"] as String? ?? "").toLowerCase().contains(query))
+            (i["inviter_name"] as String? ?? "").toLowerCase().contains(query))
         .toList();
   }
 
@@ -138,7 +138,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
 
                 return ListTile(
                   leading:
-                  const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                      const CircleAvatar(child: Icon(CupertinoIcons.person)),
                   title: Text(invitation["inviter_name"] ?? ""),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,

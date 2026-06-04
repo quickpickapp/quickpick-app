@@ -93,7 +93,7 @@ class _PickCreatePageState extends State<PickCreatePage> {
               onScaleStart: (_) => _baseZoom = _currentZoom,
               onScaleUpdate: (details) async {
                 final newZoom =
-                (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
+                    (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
                 await _controller!.setZoomLevel(newZoom);
                 setState(() => _currentZoom = newZoom);
               },
@@ -117,16 +117,15 @@ class _PickCreatePageState extends State<PickCreatePage> {
                   opacity: _currentZoom > _minZoom + 0.05 ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.black45,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       '${_currentZoom.toStringAsFixed(1)}×',
-                      style: const TextStyle(
-                          color: Colors.white, fontSize: 16),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ),
@@ -137,7 +136,7 @@ class _PickCreatePageState extends State<PickCreatePage> {
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -51,6 +51,7 @@ class AlertState extends State<Alert> {
   Widget build(BuildContext context) {
     var confirmationDisabled =
         widget.confirmButtonEnabled != null && !widget.confirmButtonEnabled!();
+    var theme = Theme.of(context);
     return AlertDialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15.0))),
@@ -119,8 +120,10 @@ class AlertState extends State<Alert> {
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(
                         confirmationDisabled
-                            ? widget.confirmButtonColor ?? Colors.indigo[200]
-                            : widget.confirmButtonColor ?? Colors.indigo),
+                            ? widget.confirmButtonColor ??
+                                theme.colorScheme.primary.withValues(alpha: 0.5)
+                            : widget.confirmButtonColor ??
+                                theme.colorScheme.primary),
                     shape: WidgetStateProperty.all(const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)))),
                     padding: WidgetStateProperty.all(

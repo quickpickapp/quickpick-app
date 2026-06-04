@@ -93,7 +93,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
     );
     return contacts
         .expand((c) =>
-        c.phones.map((p) => p.number.replaceAll(RegExp(r'[\s\-()]'), '')))
+            c.phones.map((p) => p.number.replaceAll(RegExp(r'[\s\-()]'), '')))
         .toList();
   }
 
@@ -118,7 +118,8 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
     final query = widget.searchController.text.toLowerCase();
     if (query.isEmpty) return _suggestions;
     return _suggestions
-        .where((s) => (s["name"] as String? ?? "").toLowerCase().contains(query))
+        .where(
+            (s) => (s["name"] as String? ?? "").toLowerCase().contains(query))
         .toList();
   }
 
@@ -144,30 +145,30 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
           Expanded(
             child: !_hasFetched || _filteredSuggestions.isEmpty
                 ? Center(
-              child: LocaleText(
-                "product.friend.discover.empty",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey),
-              ),
-            )
+                    child: LocaleText(
+                      "product.friend.discover.empty",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  )
                 : ListView.builder(
-              itemCount: _filteredSuggestions.length,
-              itemBuilder: (context, index) {
-                final user = _filteredSuggestions[index];
-                return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(CupertinoIcons.person),
+                    itemCount: _filteredSuggestions.length,
+                    itemBuilder: (context, index) {
+                      final user = _filteredSuggestions[index];
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          child: Icon(CupertinoIcons.person),
+                        ),
+                        title: Text(user["name"] ?? ""),
+                        trailing: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () =>
+                              _sendFriendRequest(user["id"].toString()),
+                          child: const Icon(CupertinoIcons.person_badge_plus),
+                        ),
+                      );
+                    },
                   ),
-                  title: Text(user["name"] ?? ""),
-                  trailing: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () =>
-                        _sendFriendRequest(user["id"].toString()),
-                    child: const Icon(CupertinoIcons.person_badge_plus),
-                  ),
-                );
-              },
-            ),
           ),
       ],
     );

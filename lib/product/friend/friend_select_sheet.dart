@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/request/request.dart';
@@ -59,12 +60,20 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
   }
 
   void _confirm() {
-    Navigator.pop(context, _selected.toList());
+    final recipients = _friends
+        .where((f) => _selected.contains(f['id'].toString()))
+        .map((f) => PickRecipient(
+              recipientId: f['id'].toString(),
+              publicKey: f['public_key'] as String,
+            ))
+        .toList();
+    Navigator.pop(context, recipients);
   }
 
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    var theme = Theme.of(context);
 
     return Container(
       constraints: BoxConstraints(
@@ -96,8 +105,8 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
                 if (_selected.isNotEmpty)
                   Text(
                     '${_selected.length}',
-                    style: const TextStyle(
-                      color: Colors.indigo,
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
@@ -158,6 +167,7 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
       shrinkWrap: true,
       itemCount: list.length,
       itemBuilder: (context, index) {
+        var theme = Theme.of(context);
         final friend = list[index];
         final id = friend['id'].toString();
         final isSelected = _selected.contains(id);
@@ -166,25 +176,24 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
           onTap: () => _toggle(id),
           leading: CircleAvatar(
             backgroundColor:
-            isSelected ? Colors.indigo : Colors.white12,
+                isSelected ? theme.colorScheme.primary : Colors.white12,
             child: isSelected
                 ? const Icon(Icons.check, color: Colors.white, size: 18)
                 : const Icon(CupertinoIcons.person,
-                color: Colors.white54, size: 18),
+                    color: Colors.white54, size: 18),
           ),
           title: Text(
             friend['name'] ?? '',
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.white70,
-              fontWeight:
-              isSelected ? FontWeight.w600 : FontWeight.normal,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
           trailing: isSelected
-              ? const Icon(CupertinoIcons.checkmark_circle_fill,
-              color: Colors.indigo, size: 22)
+              ? Icon(CupertinoIcons.checkmark_circle_fill,
+                  color: theme.colorScheme.primary, size: 22)
               : const Icon(CupertinoIcons.circle,
-              color: Colors.white24, size: 22),
+                  color: Colors.white24, size: 22),
         );
       },
     );
@@ -225,7 +234,8 @@ class _ConfirmButton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-          color: active ? Colors.indigo : Colors.white12,
+          color:
+              active ? Theme.of(context).colorScheme.primary : Colors.white12,
           borderRadius: BorderRadius.circular(32),
         ),
         child: Row(

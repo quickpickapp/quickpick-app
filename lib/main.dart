@@ -68,7 +68,7 @@ class _QuickPickAppState extends State<QuickPickApp>
                 useMaterial3: true,
                 primaryColor: Colors.black,
                 colorScheme: ColorScheme.light(
-                  primary: Color(0xFF2196F3),
+                  primary: Colors.indigo,
                   surface: Color(0xFFE8E8E8),
                 ),
               ),
@@ -111,8 +111,7 @@ class _AppRouterState extends State<AppRouter> {
     await Crypto().ensureKeyPair();
     await QuickPickStatistic().keep(context);
     const storage = FlutterSecureStorage();
-    final legalAccepted =
-        await storage.read(key: "legal_accepted") == "true";
+    final legalAccepted = await storage.read(key: "legal_accepted") == "true";
     final isAuthorized = await _isAuthorized();
     return (isAuthorized: isAuthorized, legalAccepted: legalAccepted);
   }
@@ -133,8 +132,10 @@ class _AppRouterState extends State<AppRouter> {
       future: _authFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: Colors.indigo)),
+          return Scaffold(
+            body: Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary)),
           );
         }
 

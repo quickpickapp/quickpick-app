@@ -258,7 +258,8 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                   // Invisible TextField on top to capture input
                                   KeyboardListener(
                                     focusNode: FocusNode(),
-                                    onKeyEvent: (event) => _onKeyEvent(index, event),
+                                    onKeyEvent: (event) =>
+                                        _onKeyEvent(index, event),
                                     child: TextField(
                                       controller: _controllers[index],
                                       focusNode: _focusNodes[index],
@@ -267,8 +268,10 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                         FilteringTextInputFormatter.digitsOnly,
                                         LengthLimitingTextInputFormatter(1),
                                       ],
-                                      onChanged: (value) => _onDigitChanged(index, value),
-                                      style: const TextStyle(color: Colors.transparent),
+                                      onChanged: (value) =>
+                                          _onDigitChanged(index, value),
+                                      style: const TextStyle(
+                                          color: Colors.transparent),
                                       cursorColor: Colors.transparent,
                                       decoration: const InputDecoration(
                                         counterText: '',
@@ -302,9 +305,11 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                   ? Text(
                                       Locales.string(context,
                                           "product.signup.verify.resend"),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
-                                        color: Colors.indigo,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     )
@@ -331,7 +336,12 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                         child: ElevatedButton.icon(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all(
-                              _isCodeValid ? Colors.indigo : Colors.indigo[200],
+                              _isCodeValid
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.5),
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
@@ -378,7 +388,8 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
 
   BoxDecoration _buildBoxDecoration(int index) {
     final isFilled = _controllers[index].text.isNotEmpty;
-    final borderColor = isFilled ? Colors.indigo : Colors.grey;
+    final borderColor =
+        isFilled ? Theme.of(context).colorScheme.primary : Colors.grey;
 
     return BoxDecoration(
       color: Colors.grey[200],

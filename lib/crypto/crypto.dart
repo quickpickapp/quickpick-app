@@ -39,10 +39,11 @@ class Crypto {
 
   Crypto({FlutterSecureStorage? storage})
       : _storage = storage ??
-      const FlutterSecureStorage(
-        aOptions: AndroidOptions(encryptedSharedPreferences: true),
-        iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-      );
+            const FlutterSecureStorage(
+              aOptions: AndroidOptions(encryptedSharedPreferences: true),
+              iOptions:
+                  IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+            );
 
   Future<void> generateAndStoreKeyPair() async {
     final keyPair = await RSA.generate(2048);
@@ -88,9 +89,9 @@ class Crypto {
   }
 
   Future<EncryptedBundle> encrypt(
-      String plaintext,
-      List<PickRecipient> recipients,
-      ) async {
+    String plaintext,
+    List<PickRecipient> recipients,
+  ) async {
     final aesAlgorithm = AesGcm.with256bits();
     final aesSecretKey = await aesAlgorithm.newSecretKey();
     final aesKeyBytes = await aesSecretKey.extractBytes();
@@ -105,7 +106,7 @@ class Crypto {
 
     final wrappedKeys = await Future.wait(
       recipients.map(
-            (r) async => MapEntry(
+        (r) async => MapEntry(
           r.recipientId,
           await RSA.encryptOAEP(aesKeyB64, '', Hash.SHA256, r.publicKey),
         ),
@@ -125,7 +126,8 @@ class Crypto {
 
     final wrappedKey = bundle.decryptionKeys[myRecipientId];
     if (wrappedKey == null) {
-      throw ArgumentError('No decryption key found for recipient $myRecipientId');
+      throw ArgumentError(
+          'No decryption key found for recipient $myRecipientId');
     }
 
     final aesKeyB64 = await RSA.decryptOAEP(

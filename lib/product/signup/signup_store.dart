@@ -9,9 +9,7 @@ class SignupStore {
     await storage.write(key: "phone_number", value: response["phone_number"]);
     await storage.write(key: "name", value: response["name"]);
     await storage.write(
-        key: "authentication_token",
-        value: response["authentication_token"]);
-    await storage.write(
-        key: "refresh_token", value: response["refresh_token"]);
+        key: "authentication_token", value: response["authentication_token"]);
+    await storage.write(key: "refresh_token", value: response["refresh_token"]);
   }
 }

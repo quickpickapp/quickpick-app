@@ -11,14 +11,14 @@ import 'package:quickpick/request/request.dart';
 
 class FriendsBody extends ProductPageBody {
   final GlobalKey<_FriendListBodyContentState> _key =
-  GlobalKey<_FriendListBodyContentState>();
+      GlobalKey<_FriendListBodyContentState>();
 
   FriendsBody({super.key})
       : super(
-    name: "product.friend.list.label",
-    unselectedIcon: CupertinoIcons.group,
-    selectedIcon: CupertinoIcons.group_solid,
-  );
+          name: "product.friend.list.label",
+          unselectedIcon: CupertinoIcons.group,
+          selectedIcon: CupertinoIcons.group_solid,
+        );
 
   @override
   Widget content(BuildContext context) {
@@ -34,7 +34,7 @@ class FriendsBody extends ProductPageBody {
       final body = jsonDecode(invitationsResponse.body);
       if (body["success"] == true) {
         final invitations =
-        List<Map<String, dynamic>>.from(body["invitations"] ?? []);
+            List<Map<String, dynamic>>.from(body["invitations"] ?? []);
         if (invitations.isNotEmpty) {
           return invitations.length;
         }
@@ -104,13 +104,13 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
             child: TabBar(
               controller: _tabController,
               indicator: BoxDecoration(
-                color: Colors.indigo.withValues(alpha: 0.15),
+                color: colorScheme.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorPadding: const EdgeInsets.all(4),
               dividerColor: Colors.transparent,
-              labelColor: Color.lerp(Colors.black, Colors.indigo, 0.8),
+              labelColor: Color.lerp(Colors.black, colorScheme.primary, 0.8),
               unselectedLabelColor: Colors.black54,
               overlayColor: WidgetStateProperty.all(Colors.transparent),
               splashFactory: NoSplash.splashFactory,

@@ -156,7 +156,12 @@ class _SignupNamePageState extends State<SignupNamePage> {
                         child: ElevatedButton.icon(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all(
-                              _isNameValid ? Colors.indigo : Colors.indigo[200],
+                              _isNameValid
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.5),
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(

@@ -7,7 +7,8 @@ class ProfileFooterLink extends StatelessWidget {
   final String url;
   final double? fontSize;
 
-  const ProfileFooterLink({super.key, 
+  const ProfileFooterLink({
+    super.key,
     required this.text,
     required this.url,
     this.fontSize,

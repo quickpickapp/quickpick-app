@@ -37,7 +37,7 @@ class ProfileNotificationToggleState extends State<ProfileNotificationToggle> {
             title: LocaleText("product.profile.notification.description"),
             value: _notificationsEnabled,
             onChanged: _toggleNotifications,
-            activeThumbColor: Colors.indigo,
+            activeThumbColor: Theme.of(context).colorScheme.primary,
             inactiveThumbColor: Colors.grey,
           ),
         );

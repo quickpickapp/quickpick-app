@@ -26,6 +26,7 @@ class _PickButtonState extends State<PickButton>
 
   @override
   Widget build(BuildContext context) {
+    var color = Theme.of(context).colorScheme.primary;
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -42,7 +43,7 @@ class _PickButtonState extends State<PickButton>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.indigo.withOpacity(0.6 * min(glowValue + 0.5, 1)),
+                color: color.withValues(alpha: 0.6 * min(glowValue + 0.5, 1)),
                 blurRadius: 15 * (glowValue + 0.5),
                 spreadRadius: 4 * (glowValue + 0.5),
               ),
@@ -56,7 +57,7 @@ class _PickButtonState extends State<PickButton>
               );
             },
             backgroundColor:
-                Color.lerp(Color(0xFF37479F), Color(0xFF495ED3), glowValue),
+                Color.lerp(color.withValues(alpha: 0.9), color, glowValue),
             shape: CircleBorder(),
             child: Icon(CupertinoIcons.camera, size: 35),
           ),

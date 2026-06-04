@@ -43,7 +43,7 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
     LoaderAlert().show(context);
     var body = <String, String>{"phone_number": phone};
     var response = await Request.post(url: "/signup/request/code/", body: body)
-      .send(context);
+        .send(context);
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }
@@ -164,8 +164,11 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all(
                               _isPhoneValid
-                                  ? Colors.indigo
-                                  : Colors.indigo[200],
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.5),
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(

@@ -101,7 +101,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   url: "https://quickpick.com/imprint/"),
                               ProfileFooterLink(
                                   text: "product.profile.terms.of.service",
-                                  url: "https://quickpick.com/terms-of-service/"),
+                                  url:
+                                      "https://quickpick.com/terms-of-service/"),
                               ProfileFooterLink(
                                   text: "product.profile.privacy.policy",
                                   url: "https://quickpick.com/privacy-policy/"),

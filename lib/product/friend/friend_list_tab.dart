@@ -107,31 +107,31 @@ class _FriendListTabState extends State<FriendListTab> {
         Expanded(
           child: _filteredFriends.isEmpty
               ? const Center(
-            child: LocaleText(
-              "product.friend.list.no.results",
-              style: TextStyle(color: Colors.grey),
-            ),
-          )
-              : ListView.builder(
-            controller: widget.scrollController,
-            itemCount: _filteredFriends.length,
-            itemBuilder: (context, index) {
-              final friend = _filteredFriends[index];
-              return ListTile(
-                leading:
-                const CircleAvatar(child: Icon(CupertinoIcons.person)),
-                title: Text(friend["name"] ?? ""),
-                trailing: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => _removeFriend(friend),
-                  child: const Icon(
-                    CupertinoIcons.person_badge_minus,
-                    color: Colors.red,
+                  child: LocaleText(
+                    "product.friend.list.no.results",
+                    style: TextStyle(color: Colors.grey),
                   ),
+                )
+              : ListView.builder(
+                  controller: widget.scrollController,
+                  itemCount: _filteredFriends.length,
+                  itemBuilder: (context, index) {
+                    final friend = _filteredFriends[index];
+                    return ListTile(
+                      leading: const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
+                      title: Text(friend["name"] ?? ""),
+                      trailing: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => _removeFriend(friend),
+                        child: const Icon(
+                          CupertinoIcons.person_badge_minus,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       ],
     );

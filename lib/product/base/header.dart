@@ -22,9 +22,7 @@ class _HeaderState extends State<Header> {
         width: 50,
       ),
       titleSpacing: 10,
-      actions: <Widget>[
-        HeaderAccountButton()
-      ],
+      actions: <Widget>[HeaderAccountButton()],
       automaticallyImplyLeading: false,
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),

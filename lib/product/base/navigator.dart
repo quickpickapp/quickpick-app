@@ -22,7 +22,6 @@ class ProductNavigator extends StatefulWidget implements PreferredSizeWidget {
 
 class _ProductNavigatorState extends State<ProductNavigator> {
   Map<int, int> notificationCounts = {};
-  final _color = Colors.indigo;
 
   @override
   void initState() {
@@ -55,7 +54,8 @@ class _ProductNavigatorState extends State<ProductNavigator> {
           BottomNavigationBar(
             backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
-            selectedItemColor: Color.lerp(Colors.black, _color, 0.8),
+            selectedItemColor: Color.lerp(
+                Colors.black, Theme.of(context).colorScheme.primary, 0.8),
             currentIndex: widget.selectedIndex,
             onTap: (index) {
               setState(() {
@@ -85,6 +85,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
   }
 
   List<BottomNavigationBarItem> navigationBarItems(BuildContext context) {
+    var color = Theme.of(context).colorScheme.primary;
     List<BottomNavigationBarItem> items = [];
     for (var i = 0; i < widget.pageBodies.length; i++) {
       var body = widget.pageBodies[i];
@@ -97,9 +98,8 @@ class _ProductNavigatorState extends State<ProductNavigator> {
           curve: Curves.easeInOut,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           decoration: BoxDecoration(
-            color: isSelected
-                ? _color.withValues(alpha: 0.15)
-                : Colors.transparent,
+            color:
+                isSelected ? color.withValues(alpha: 0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
@@ -109,7 +109,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
               isSelected ? body.selectedIcon : body.unselectedIcon,
               size: 30,
               color: isSelected
-                  ? Color.lerp(Colors.black, _color, 0.8)
+                  ? Color.lerp(Colors.black, color, 0.8)
                   : Colors.black54,
             ),
           ),

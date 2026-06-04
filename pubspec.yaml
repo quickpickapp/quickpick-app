@@ -58,6 +58,7 @@ dependencies:
   fast_rsa: ^3.8.6
   cryptography: ^2.9.0
   flutter_contacts: ^2.2.0
+  flutter_image_compress: ^2.4.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3

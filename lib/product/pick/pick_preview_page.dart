@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/product/friend/friend_select_sheet.dart';
+import 'package:quickpick/request/request.dart';
 
 class DrawnLine {
   final List<Offset> points;
@@ -83,7 +87,7 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
   Future<Uint8List?> _captureImage() async {
     try {
       final boundary = _repaintKey.currentContext!.findRenderObject()
-      as RenderRepaintBoundary;
+          as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       return byteData?.buffer.asUint8List();
@@ -95,22 +99,59 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
 
   Future<void> _onSend() async {
     _commitPendingText();
-    if (!mounted) {
-      return;
-    }
-    final selectedIds = await showModalBottomSheet<List<String>>(
+    if (!mounted) return;
+
+    final selectedRecipients = await showModalBottomSheet<List<PickRecipient>>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => const FriendSelectSheet(),
     );
 
-    if (selectedIds == null || selectedIds.isEmpty) {
-      return;
-    }
+    if (selectedRecipients == null || selectedRecipients.isEmpty) return;
+
+
     final imageBytes = await _captureImage();
-    Navigator.pop(context);
-    Navigator.pop(context);
+    if (imageBytes == null) return;
+
+    final compressed = await FlutterImageCompress.compressWithList(
+      imageBytes,
+      minWidth: 1080,
+      minHeight: 1080,
+      quality: 80,
+      format: CompressFormat.jpeg,
+    );
+
+    final plaintext = base64.encode(compressed);
+
+    final crypto = Crypto();
+    final bundle = await crypto.encrypt(plaintext, selectedRecipients);
+
+    final response = await Request.post(
+      url: "/pick/create/",
+      body: {
+        "type": "QUESTION",
+        "duration": 24 * 60 * 60 * 1000,
+        "nonce": bundle.nonce,
+        "ciphertext": bundle.ciphertext,
+        "tag": bundle.tag,
+        "recipients": bundle.decryptionKeys.entries
+            .map((e) => {
+                  "recipient_id": e.key,
+                  "decryption_key": e.value,
+                })
+            .toList(),
+      },
+    ).send(context);
+
+    if (response == null) return;
+
+    final body = jsonDecode(response.body);
+    if (body["success"] == true) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
   }
 
   void _setMode(EditMode m) {
@@ -221,6 +262,7 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
   }
 
   bool get _canUndo => _history.isNotEmpty;
+
   bool get _canRedo => _redoStack.isNotEmpty;
 
   @override
@@ -278,7 +320,8 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -314,25 +357,25 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
                       duration: const Duration(milliseconds: 200),
                       child: _mode != EditMode.none
                           ? _OptionsRow(
-                        key: const ValueKey('opts'),
-                        selectedColor: _activeColor,
-                        strokeWidth: _strokeWidth,
-                        fontSize: _fontSize,
-                        showStroke: _mode == EditMode.draw,
-                        showFontSize: _mode == EditMode.text,
-                        onColorChange: (c) {
-                          setState(() => _activeColor = c);
-                        },
-                        onStrokeChange: (s) {
-                          setState(() => _strokeWidth = s);
-                        },
-                        onFontSizeChange: (s) {
-                          setState(() {
-                            _fontSize = s;
-                            _pendingText?.fontSize = s;
-                          });
-                        },
-                      )
+                              key: const ValueKey('opts'),
+                              selectedColor: _activeColor,
+                              strokeWidth: _strokeWidth,
+                              fontSize: _fontSize,
+                              showStroke: _mode == EditMode.draw,
+                              showFontSize: _mode == EditMode.text,
+                              onColorChange: (c) {
+                                setState(() => _activeColor = c);
+                              },
+                              onStrokeChange: (s) {
+                                setState(() => _strokeWidth = s);
+                              },
+                              onFontSizeChange: (s) {
+                                setState(() {
+                                  _fontSize = s;
+                                  _pendingText?.fontSize = s;
+                                });
+                              },
+                            )
                           : const SizedBox.shrink(key: ValueKey('empty')),
                     ),
                     const SizedBox(height: 12),
@@ -430,7 +473,8 @@ class _OptionsRow extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.line_weight_rounded, color: Colors.white54, size: 16),
+                const Icon(Icons.line_weight_rounded,
+                    color: Colors.white54, size: 16),
                 Expanded(
                   child: SliderTheme(
                     data: SliderThemeData(
@@ -439,7 +483,8 @@ class _OptionsRow extends StatelessWidget {
                       thumbColor: selectedColor,
                       overlayColor: selectedColor.withOpacity(0.2),
                       trackHeight: 3,
-                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 7),
                     ),
                     child: Slider(
                       value: strokeWidth,
@@ -456,7 +501,8 @@ class _OptionsRow extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.text_fields_rounded, color: Colors.white54, size: 16),
+                const Icon(Icons.text_fields_rounded,
+                    color: Colors.white54, size: 16),
                 Expanded(
                   child: SliderTheme(
                     data: SliderThemeData(
@@ -465,7 +511,8 @@ class _OptionsRow extends StatelessWidget {
                       thumbColor: selectedColor,
                       overlayColor: selectedColor.withOpacity(0.2),
                       trackHeight: 3,
-                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 7),
                     ),
                     child: Slider(
                       value: fontSize,
@@ -581,7 +628,7 @@ class _SendButton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-          color: Colors.indigo,
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(32),
         ),
         child: const Row(
@@ -733,8 +780,7 @@ class _DrawingPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
         ..style = PaintingStyle.stroke;
-      final path = Path()
-        ..moveTo(line.points.first.dx, line.points.first.dy);
+      final path = Path()..moveTo(line.points.first.dx, line.points.first.dy);
       for (int i = 1; i < line.points.length; i++) {
         path.lineTo(line.points[i].dx, line.points[i].dy);
       }

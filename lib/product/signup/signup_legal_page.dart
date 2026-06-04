@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/signup/signup_phone_page.dart';
@@ -15,10 +16,13 @@ class SignupLegalPage extends StatefulWidget {
 class _SignupLegalPageState extends State<SignupLegalPage> {
   bool _accepted = false;
 
-  void _onGetStarted() {
+  void _onGetStarted() async {
     if (!_accepted) {
       return;
     }
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "legal_accepted", value: "true");
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(

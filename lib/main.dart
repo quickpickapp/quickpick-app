@@ -11,6 +11,7 @@ import 'package:quickpick/notification/notification.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
 import 'package:quickpick/product/signup/signup_legal_page.dart';
+import 'package:quickpick/product/signup/signup_phone_page.dart';
 import 'package:quickpick/request/request.dart';
 import 'package:quickpick/statistic/statistic.dart';
 
@@ -98,7 +99,7 @@ class AppRouter extends StatefulWidget {
 }
 
 class _AppRouterState extends State<AppRouter> {
-  late final Future<bool> _authFuture;
+  late final Future<({bool isAuthorized, bool legalAccepted})> _authFuture;
 
   @override
   void initState() {
@@ -106,10 +107,14 @@ class _AppRouterState extends State<AppRouter> {
     _authFuture = _initialize();
   }
 
-  Future<bool> _initialize() async {
+  Future<({bool isAuthorized, bool legalAccepted})> _initialize() async {
     await Crypto().ensureKeyPair();
     await QuickPickStatistic().keep(context);
-    return await _isAuthorized();
+    const storage = FlutterSecureStorage();
+    final legalAccepted =
+        await storage.read(key: "legal_accepted") == "true";
+    final isAuthorized = await _isAuthorized();
+    return (isAuthorized: isAuthorized, legalAccepted: legalAccepted);
   }
 
   Future<bool> _isAuthorized() async {
@@ -124,7 +129,7 @@ class _AppRouterState extends State<AppRouter> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
+    return FutureBuilder<({bool isAuthorized, bool legalAccepted})>(
       future: _authFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
@@ -133,8 +138,13 @@ class _AppRouterState extends State<AppRouter> {
           );
         }
 
-        final isAuthorized = snapshot.data ?? false;
-        return isAuthorized ? ProductPage() : SignupLegalPage();
+        final data = snapshot.data;
+        if (data == null || !data.isAuthorized) {
+          return data?.legalAccepted == true
+              ? SignupPhonePage()
+              : SignupLegalPage();
+        }
+        return ProductPage();
       },
     );
   }

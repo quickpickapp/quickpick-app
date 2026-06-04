@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/product/friend/friend_select_sheet.dart';
 
 class DrawnLine {
   final List<Offset> points;
@@ -95,6 +98,17 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
     if (!mounted) {
       return;
     }
+    final selectedIds = await showModalBottomSheet<List<String>>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const FriendSelectSheet(),
+    );
+
+    if (selectedIds == null || selectedIds.isEmpty) {
+      return;
+    }
+    final imageBytes = await _captureImage();
     Navigator.pop(context);
     Navigator.pop(context);
   }
@@ -488,14 +502,14 @@ class _ToolRow extends StatelessWidget {
       children: [
         _ToolChip(
           icon: Icons.edit_rounded,
-          label: 'Malen',
+          label: "product.pick.preview.draw",
           active: mode == EditMode.draw,
           onTap: () => onModeTap(EditMode.draw),
         ),
         const SizedBox(width: 12),
         _ToolChip(
           icon: Icons.text_fields_rounded,
-          label: 'Text',
+          label: "product.pick.preview.text",
           active: mode == EditMode.text,
           onTap: () => onModeTap(EditMode.text),
         ),
@@ -538,7 +552,7 @@ class _ToolChip extends StatelessWidget {
           children: [
             Icon(icon, color: Colors.white, size: 18),
             const SizedBox(width: 6),
-            Text(
+            LocaleText(
               label,
               style: TextStyle(
                 color: active ? Colors.white : Colors.white70,
@@ -567,23 +581,14 @@ class _SendButton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
-          ),
+          color: Colors.indigo,
           borderRadius: BorderRadius.circular(32),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0072FF).withOpacity(0.4),
-              blurRadius: 16,
-              offset: const Offset(0, 5),
-            ),
-          ],
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Senden',
+            LocaleText(
+              "product.pick.send",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

@@ -33,6 +33,11 @@
   "product.pick.list.search": "Search for pick...",
   "product.pick.list.empty": "No picks found.",
 
+  "product.pick.preview.draw": "Draw",
+  "product.pick.preview.text": "Text",
+
+  "product.pick.send": "Send",
+
   "product.friend.tab.friends": "Friends",
   "product.friend.tab.discover": "Discover",
   "product.friend.tab.invitations": "Invitations",
@@ -52,7 +57,15 @@
 
   "product.friend.invitations.empty": "No open invitations.",
 
+  "product.friend.select": "Select friends",
+
   "product.profile.title": "Profile",
+  "product.profile.account": "Account",
+  "product.profile.account.name": "Name",
+  "product.profile.account.phone.number": "Phone number",
+  "product.profile.logout": "Logout",
+  "product.profile.logout.alert": "Are you sure you want to logout?",
+  "product.profile.logout.continue": "Log out now",
   "product.profile.language": "Language",
   "product.profile.notification": "Notifications",
   "product.profile.notification.description": "Receive notifications",

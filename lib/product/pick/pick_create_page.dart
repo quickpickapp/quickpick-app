@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:quickpick/product/pick/pick_preview_page.dart';
 
 class PickCreatePage extends StatefulWidget {
@@ -97,7 +97,13 @@ class _PickCreatePageState extends State<PickCreatePage> {
                 await _controller!.setZoomLevel(newZoom);
                 setState(() => _currentZoom = newZoom);
               },
-              child: _FullscreenPreview(controller: _controller!),
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: _controller!.value.previewSize!.height /
+                      _controller!.value.previewSize!.width,
+                  child: CameraPreview(_controller!),
+                ),
+              ),
             )
           else
             const Center(child: CircularProgressIndicator(color: Colors.white)),
@@ -177,26 +183,6 @@ class _PickCreatePageState extends State<PickCreatePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _FullscreenPreview extends StatelessWidget {
-  final CameraController controller;
-
-  const _FullscreenPreview({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: FittedBox(
-        fit: BoxFit.cover,
-        child: SizedBox(
-          width: controller.value.previewSize!.height,
-          height: controller.value.previewSize!.width,
-          child: CameraPreview(controller),
-        ),
       ),
     );
   }

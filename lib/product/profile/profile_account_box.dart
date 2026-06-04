@@ -13,6 +13,7 @@ class ProfileAccountBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const storage = FlutterSecureStorage();
+    var theme = Theme.of(context);
     return FutureBuilder<String?>(
       future: storage.read(key: "phone_number"),
       builder: (context, AsyncSnapshot<String?> phoneNumber) {
@@ -25,10 +26,10 @@ class ProfileAccountBox extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: theme.appBarTheme.backgroundColor,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
-                      color: Colors.grey[400]!,
+                      color: theme.dividerColor,
                       width: 1,
                     ),
                   ),

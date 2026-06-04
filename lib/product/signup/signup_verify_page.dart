@@ -174,10 +174,9 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
   @override
   Widget build(BuildContext context) {
     final canResend = _resendSecondsLeft == 0;
-
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         bottom: PreferredSize(
@@ -185,7 +184,6 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
           child: Container(color: Colors.black12, height: 1.0),
         ),
       ),
-      backgroundColor: const Color(0xFFFAFAFA),
       resizeToAvoidBottomInset: true,
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -218,13 +216,14 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                 text: Locales.string(context,
                                     "product.signup.verify.sent.prefix"),
                                 style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[600]),
+                                    fontSize: 14, color: Colors.grey[500]),
                               ),
                               TextSpan(
                                 text: widget.phoneNumber,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.black87,
+                                  color: theme.colorScheme.onSurface
+                                      .withValues(alpha: 0.9),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -241,7 +240,6 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
-                                  // Visible box with centered digit
                                   Container(
                                     width: 44,
                                     height: 56,
@@ -255,7 +253,6 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                       ),
                                     ),
                                   ),
-                                  // Invisible TextField on top to capture input
                                   KeyboardListener(
                                     focusNode: FocusNode(),
                                     onKeyEvent: (event) =>
@@ -388,11 +385,13 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
 
   BoxDecoration _buildBoxDecoration(int index) {
     final isFilled = _controllers[index].text.isNotEmpty;
-    final borderColor =
-        isFilled ? Theme.of(context).colorScheme.primary : Colors.grey;
+    var theme = Theme.of(context);
+    final borderColor = isFilled
+        ? theme.colorScheme.primary
+        : theme.dividerColor;
 
     return BoxDecoration(
-      color: Colors.grey[200],
+      color: theme.appBarTheme.backgroundColor,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: borderColor, width: 2.0),
     );

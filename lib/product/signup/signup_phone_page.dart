@@ -88,7 +88,6 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         bottom: PreferredSize(
@@ -96,7 +95,6 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
           child: Container(color: Colors.black12, height: 1.0),
         ),
       ),
-      backgroundColor: Color(0xFFFAFAFA),
       resizeToAvoidBottomInset: true,
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
@@ -150,7 +148,8 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
                             enabledBorder: _buildInputBorder(),
                             focusedBorder: _buildInputBorder(),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor:
+                                Theme.of(context).appBarTheme.backgroundColor,
                           ),
                         ),
                         SizedBox(height: 10),

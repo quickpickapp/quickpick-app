@@ -59,7 +59,7 @@ class AlertState extends State<Alert> {
       title: Center(
         child: CircleAvatar(
           radius: 30,
-          backgroundColor: Colors.grey[200],
+          backgroundColor: theme.appBarTheme.backgroundColor,
           child: createAlertIcon(),
         ),
       ),
@@ -158,7 +158,7 @@ class AlertState extends State<Alert> {
   }
 
   Color? createAlertIconColor() {
-    Color? iconColor = Colors.black;
+    Color? iconColor = Theme.of(context).colorScheme.onSurface;
     if (widget.iconColor != null) {
       iconColor = widget.iconColor;
     } else if (widget.type != null) {

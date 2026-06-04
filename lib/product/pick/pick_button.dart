@@ -38,7 +38,7 @@ class _PickButtonState extends State<PickButton>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white,
+              color: Theme.of(context).appBarTheme.backgroundColor!,
               width: 3,
             ),
             boxShadow: [
@@ -59,7 +59,7 @@ class _PickButtonState extends State<PickButton>
             backgroundColor:
                 Color.lerp(color.withValues(alpha: 0.9), color, glowValue),
             shape: CircleBorder(),
-            child: Icon(CupertinoIcons.camera, size: 35),
+            child: Icon(CupertinoIcons.camera, size: 35, color: Colors.white),
           ),
         );
       },

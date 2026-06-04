@@ -6,6 +6,7 @@ import 'package:quickpick/product/profile/profile_account_box.dart';
 import 'package:quickpick/product/profile/profile_footer_link.dart';
 import 'package:quickpick/product/profile/profile_language_selection.dart';
 import 'package:quickpick/product/profile/profile_notification_toggle.dart';
+import 'package:quickpick/product/profile/profile_theme_selection.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,7 +22,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: Icon(CupertinoIcons.arrow_left),
@@ -38,7 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      backgroundColor: Color(0xFFFAFAFA),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: LayoutBuilder(
@@ -71,6 +70,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         SizedBox(height: 10),
                         ProfileLanguageSelection(),
+                        SizedBox(height: 30),
+                        LocaleText(
+                          "product.profile.theme",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 10),
+                        ProfileThemeSelection(),
                         SizedBox(height: 30),
                         LocaleText(
                           "product.profile.notification",

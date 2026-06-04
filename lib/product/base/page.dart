@@ -51,7 +51,6 @@ class ProductPageState extends State<ProductPage> {
         body:
             pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
                 .content(context),
-        backgroundColor: Color(0xFFFAFAFA),
         floatingActionButton: PickButton(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),

@@ -98,7 +98,7 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
           child: Container(
             height: 46,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              color: colorScheme.surfaceContainerHighest.withOpacity(0.4),
               borderRadius: BorderRadius.circular(14),
             ),
             child: TabBar(
@@ -110,8 +110,8 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorPadding: const EdgeInsets.all(4),
               dividerColor: Colors.transparent,
-              labelColor: Color.lerp(Colors.black, colorScheme.primary, 0.8),
-              unselectedLabelColor: Colors.black54,
+              labelColor: Color.lerp(colorScheme.onSurface, colorScheme.primary, 0.8),
+              unselectedLabelColor: colorScheme.onSurface.withValues(alpha: 0.6),
               overlayColor: WidgetStateProperty.all(Colors.transparent),
               splashFactory: NoSplash.splashFactory,
               labelStyle: const TextStyle(

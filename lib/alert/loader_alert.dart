@@ -24,7 +24,7 @@ class _LoaderAlertState extends State<LoaderAlert> {
             width: 30,
             height: 30,
             child: CircularProgressIndicator(
-              color: Colors.black,
+              color: Theme.of(context).colorScheme.onSurface,
               strokeWidth: 4,
             ),
           ),

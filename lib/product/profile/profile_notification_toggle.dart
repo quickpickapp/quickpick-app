@@ -31,15 +31,12 @@ class ProfileNotificationToggleState extends State<ProfileNotificationToggle> {
         if (notifications.connectionState == ConnectionState.done) {
           _notificationsEnabled = notifications.data != "false";
         }
-        return Skeletonizer(
-          enabled: notifications.connectionState != ConnectionState.done,
-          child: SwitchListTile(
-            title: LocaleText("product.profile.notification.description"),
-            value: _notificationsEnabled,
-            onChanged: _toggleNotifications,
-            activeThumbColor: Theme.of(context).colorScheme.primary,
-            inactiveThumbColor: Colors.grey,
-          ),
+        return SwitchListTile(
+          title: LocaleText("product.profile.notification.description"),
+          value: _notificationsEnabled,
+          onChanged: _toggleNotifications,
+          activeThumbColor: Theme.of(context).colorScheme.primary,
+          inactiveThumbColor: Colors.grey,
         );
       },
     );

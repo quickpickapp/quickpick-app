@@ -46,7 +46,6 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Color(0xFFFAFAFA),
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 30),
@@ -65,7 +64,9 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                           SizedBox(height: 60),
                           Center(
                             child: Image.asset(
-                              'assets/images/logo.png',
+                              theme.brightness == Brightness.light
+                                  ? 'assets/images/logo.png'
+                                  : 'assets/images/logo-light.png',
                               width: 100,
                             ),
                           ),
@@ -75,7 +76,8 @@ class _SignupLegalPageState extends State<SignupLegalPage> {
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.9),
                               height: 1.2,
                             ),
                             textAlign: TextAlign.center,

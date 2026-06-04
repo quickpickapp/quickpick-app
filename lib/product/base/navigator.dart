@@ -46,16 +46,17 @@ class _ProductNavigatorState extends State<ProductNavigator> {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Colors.black12, width: 1),
+          top: BorderSide(color: Theme.of(context).dividerColor, width: 1),
         ),
       ),
       child: Stack(
         children: [
           BottomNavigationBar(
-            backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.lerp(
-                Colors.black, Theme.of(context).colorScheme.primary, 0.8),
+                Theme.of(context).colorScheme.onSurface,
+                Theme.of(context).colorScheme.primary,
+                0.8),
             currentIndex: widget.selectedIndex,
             onTap: (index) {
               setState(() {
@@ -85,7 +86,8 @@ class _ProductNavigatorState extends State<ProductNavigator> {
   }
 
   List<BottomNavigationBarItem> navigationBarItems(BuildContext context) {
-    var color = Theme.of(context).colorScheme.primary;
+    var primaryColor = Theme.of(context).colorScheme.primary;
+    var textColor = Theme.of(context).colorScheme.onSurface;
     List<BottomNavigationBarItem> items = [];
     for (var i = 0; i < widget.pageBodies.length; i++) {
       var body = widget.pageBodies[i];
@@ -99,7 +101,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           decoration: BoxDecoration(
             color:
-                isSelected ? color.withValues(alpha: 0.15) : Colors.transparent,
+                isSelected ? primaryColor.withValues(alpha: 0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
@@ -109,8 +111,8 @@ class _ProductNavigatorState extends State<ProductNavigator> {
               isSelected ? body.selectedIcon : body.unselectedIcon,
               size: 30,
               color: isSelected
-                  ? Color.lerp(Colors.black, color, 0.8)
-                  : Colors.black54,
+                  ? Color.lerp(textColor, primaryColor, 0.8)
+                  : textColor.withValues(alpha: 0.6),
             ),
           ),
         ),

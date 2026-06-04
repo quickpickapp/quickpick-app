@@ -14,11 +14,13 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
 class _HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return AppBar(
-      backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       title: Image.asset(
-        'assets/images/logo.png',
+        theme.brightness == Brightness.light
+            ? 'assets/images/logo.png'
+            : 'assets/images/logo-light.png',
         width: 50,
       ),
       titleSpacing: 10,
@@ -27,7 +29,7 @@ class _HeaderState extends State<Header> {
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Container(
-          color: Colors.black12,
+          color: theme.dividerColor,
           height: 1.0,
         ),
       ),

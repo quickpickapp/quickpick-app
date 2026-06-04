@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/signup/signup_body.dart';
+import 'package:quickpick/product/signup/signup_store.dart';
 import 'package:quickpick/request/request.dart';
 
 class SignupNamePage extends StatefulWidget {
@@ -62,13 +62,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
       ).show(context);
       return;
     }
-    const storage = FlutterSecureStorage();
-    await storage.write(key: "user", value: responseBody["user"]);
-    await storage.write(
-        key: "authentication_token",
-        value: responseBody["authentication_token"]);
-    await storage.write(
-        key: "refresh_token", value: responseBody["refresh_token"]);
+    await SignupStore().save(responseBody);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

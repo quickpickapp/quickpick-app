@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/product/profile/profile_account_box.dart';
 import 'package:quickpick/product/profile/profile_footer_link.dart';
 import 'package:quickpick/product/profile/profile_language_selection.dart';
 import 'package:quickpick/product/profile/profile_notification_toggle.dart';
@@ -53,6 +54,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 30),
+                        LocaleText(
+                          "product.profile.account",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 10),
+                        ProfileAccountBox(),
                         SizedBox(height: 30),
                         LocaleText(
                           "product.profile.language",

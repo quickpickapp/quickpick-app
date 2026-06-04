@@ -7,6 +7,8 @@ class RequestReset {
   reset(context) async {
     const storage = FlutterSecureStorage();
     await storage.delete(key: "user");
+    await storage.delete(key: "phone_number");
+    await storage.delete(key: "name");
     await storage.delete(key: "authentication_token");
     await storage.delete(key: "refresh_token");
     Alert(

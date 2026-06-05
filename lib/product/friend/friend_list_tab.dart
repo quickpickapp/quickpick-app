@@ -119,7 +119,9 @@ class _FriendListTabState extends State<FriendListTab> {
                     final friend = _filteredFriends[index];
                     return ListTile(
                       leading: const CircleAvatar(
-                          child: Icon(CupertinoIcons.person)),
+                        foregroundColor: Colors.white,
+                        child: Icon(CupertinoIcons.person),
+                      ),
                       title: Text(friend["name"] ?? ""),
                       trailing: CupertinoButton(
                         padding: EdgeInsets.zero,

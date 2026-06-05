@@ -2,15 +2,18 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:quickpick/crypto/crypto.dart';
 
 class SignupBody {
   Future<Map<String, Object>> generate(verificationToken, name) async {
     var publicKey = await Crypto().getPublicKey();
+    var firebaseToken = await FirebaseMessaging.instance.getToken() ?? "";
     var body = <String, Object>{
       "verification_token": verificationToken,
       "name": name,
       "public_key": publicKey,
+      "firebase_token": firebaseToken,
       "legal_accepted": true
     };
     body.addAll(await _findDeviceInfo());

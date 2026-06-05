@@ -157,6 +157,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
                       final user = _filteredSuggestions[index];
                       return ListTile(
                         leading: const CircleAvatar(
+                          foregroundColor: Colors.white,
                           child: Icon(CupertinoIcons.person),
                         ),
                         title: Text(user["name"] ?? ""),

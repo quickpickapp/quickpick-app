@@ -137,8 +137,10 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
                 final invitationId = invitation["invitation_id"].toString();
 
                 return ListTile(
-                  leading:
-                      const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                  leading: const CircleAvatar(
+                    foregroundColor: Colors.white,
+                    child: Icon(CupertinoIcons.person),
+                  ),
                   title: Text(invitation["inviter_name"] ?? ""),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,

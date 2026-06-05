@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,7 @@ import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/base/page_body.dart';
 import 'package:quickpick/product/pick/pick_list_empty.dart';
+import 'package:quickpick/product/pick/pick_page.dart';
 import 'package:quickpick/request/request.dart';
 
 class PickListBody extends ProductPageBody {
@@ -38,6 +40,7 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
 
   List<Map<String, dynamic>> _picks = [];
   bool _isLoading = true;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -48,6 +51,7 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
 
   @override
   void dispose() {
+    _timer?.cancel();
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -66,7 +70,14 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
         _picks = picks;
         _isLoading = false;
       });
+      _startTimer();
     }
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   void scrollToTop() {
@@ -85,8 +96,36 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
     return _picks
         .where((p) =>
     (p["type"] as String).toLowerCase().contains(query) ||
-        (p["id"] as String).toLowerCase().contains(query))
+        (p["creator_name"] as String).toLowerCase().contains(query))
         .toList();
+  }
+
+  String _formatExpiry(int expiresAt) {
+    final expiry = DateTime.fromMillisecondsSinceEpoch(expiresAt);
+    final diff = expiry.difference(DateTime.now());
+
+    if (diff.isNegative) return "Abgelaufen";
+
+    if (diff.inHours >= 1) {
+      final h = diff.inHours;
+      final m = diff.inMinutes % 60;
+      return "${h}h ${m}m";
+    } else if (diff.inMinutes >= 1) {
+      final m = diff.inMinutes;
+      final s = diff.inSeconds % 60;
+      return "${m}m ${s}s";
+    } else {
+      return "${diff.inSeconds}s";
+    }
+  }
+
+  Color _expiryColor(int expiresAt) {
+    final diff =
+    DateTime.fromMillisecondsSinceEpoch(expiresAt).difference(DateTime.now());
+    if (diff.isNegative) return Colors.grey;
+    if (diff.inMinutes < 1) return Colors.red;
+    if (diff.inHours < 1) return Colors.orange;
+    return Colors.green;
   }
 
   @override
@@ -122,16 +161,31 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
             itemCount: _filteredPicks.length,
             itemBuilder: (context, index) {
               final pick = _filteredPicks[index];
+              final expiresAt = pick["expires_at"] as int;
               return ListTile(
                 leading: const CircleAvatar(
+                  foregroundColor: Colors.white,
                   child: Icon(CupertinoIcons.text_bubble),
                 ),
-                title: Text(pick["type"] ?? ""),
+                title: Text(pick["creator_name"] ?? ""),
                 subtitle: Text(
-                  _formatDate(pick["created_at"] as int),
-                  style: const TextStyle(
+                  pick["type"] ?? "",
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                trailing: Text(
+                  _formatExpiry(expiresAt),
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                    color: _expiryColor(expiresAt),
+                  ),
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PickPage(
+                      pickId: pick["id"] as String,
+                    ),
                   ),
                 ),
               );
@@ -140,10 +194,5 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
         ),
       ],
     );
-  }
-
-  String _formatDate(int createdAt) {
-    final dt = DateTime.fromMillisecondsSinceEpoch(createdAt);
-    return "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
   }
 }

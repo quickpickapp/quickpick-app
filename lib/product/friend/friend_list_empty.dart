@@ -9,7 +9,7 @@ class FriendListEmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
 
     return Center(
       child: Padding(
@@ -21,13 +21,13 @@ class FriendListEmptyContent extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 CupertinoIcons.person_2,
                 size: 38,
-                color: color.withValues(alpha: 0.7),
+                color: theme.colorScheme.primary.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 20),
@@ -36,7 +36,7 @@ class FriendListEmptyContent extends StatelessWidget {
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                color: Colors.black87,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
               ),
             ),
             const SizedBox(height: 8),
@@ -45,7 +45,7 @@ class FriendListEmptyContent extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.black45,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 height: 1.5,
               ),
             ),
@@ -53,7 +53,7 @@ class FriendListEmptyContent extends StatelessWidget {
             FilledButton.icon(
               onPressed: onDiscoverTap,
               style: FilledButton.styleFrom(
-                backgroundColor: color,
+                backgroundColor: theme.colorScheme.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,

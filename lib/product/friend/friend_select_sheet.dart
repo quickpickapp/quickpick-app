@@ -147,7 +147,7 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: LocaleText(
-          'product.friend.list.empty',
+          'product.friend.list.empty.title',
           style: const TextStyle(color: Colors.grey),
         ),
       );

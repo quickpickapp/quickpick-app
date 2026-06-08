@@ -50,23 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAFtRy_BQ2PzRHTXx7aSUC2BezGvg1sju0',
-    appId: '1:862018629934:android:d58ddc019c7590417c4abf',
-    messagingSenderId: '862018629934',
-    projectId: 'quickpick-435615',
-    storageBucket: 'quickpick-435615.firebasestorage.app',
+    apiKey: 'AIzaSyDTedbNfcuzdpojQI5jpKlgxegJ0kdZ5Ms',
+    appId: '1:537273650778:android:b462bdecfd3625cc3b5263',
+    messagingSenderId: '537273650778',
+    projectId: 'quickpick-c3c13',
+    storageBucket: 'quickpick-c3c13.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBCa3FwsSZXnZHijssd6MzOMmeJlrrSelY',
-    appId: '1:862018629934:ios:16de9ea4e4e1cebd7c4abf',
-    messagingSenderId: '862018629934',
-    projectId: 'quickpick-435615',
-    storageBucket: 'quickpick-435615.firebasestorage.app',
-    androidClientId:
-        '862018629934-o9hs3cnuc8fk03n8d8uf52af0eto5fa1.apps.googleusercontent.com',
-    iosClientId:
-        '862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com',
+    apiKey: 'AIzaSyC-bqQDlbMzJp2GHvOfKS2Sv5QwxcEajAI',
+    appId: '1:537273650778:ios:eeda36d7e3a730803b5263',
+    messagingSenderId: '537273650778',
+    projectId: 'quickpick-c3c13',
+    storageBucket: 'quickpick-c3c13.firebasestorage.app',
     iosBundleId: 'com.quickpick-app',
   );
 }

@@ -25,6 +25,20 @@ class PickListBody extends ProductPageBody {
   Widget content(BuildContext context) {
     return PickListBodyContent(key: _key);
   }
+
+  @override
+  Future<int> notifications(BuildContext context) async {
+    final response = await Request.get(url: "/pick/list/").send(context);
+    if (response == null) return 0;
+
+    final body = jsonDecode(response.body);
+    if (body["success"] == true) {
+      final picks = List<Map<String, dynamic>>.from(body["picks"] ?? []);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      return picks.where((p) => (p["expires_at"] as int) > now).length;
+    }
+    return 0;
+  }
 }
 
 class PickListBodyContent extends StatefulWidget {
@@ -64,8 +78,8 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
     final body = jsonDecode(response.body);
     if (body["success"] == true) {
       final picks = List<Map<String, dynamic>>.from(body["picks"]);
-      picks.sort((a, b) =>
-          (b["created_at"] as int).compareTo(a["created_at"] as int));
+      picks.sort(
+              (a, b) => (b["created_at"] as int).compareTo(a["created_at"] as int));
       setState(() {
         _picks = picks;
         _isLoading = false;
@@ -120,8 +134,8 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
   }
 
   Color _expiryColor(int expiresAt) {
-    final diff =
-    DateTime.fromMillisecondsSinceEpoch(expiresAt).difference(DateTime.now());
+    final diff = DateTime.fromMillisecondsSinceEpoch(expiresAt)
+        .difference(DateTime.now());
     if (diff.isNegative) return Colors.grey;
     if (diff.inMinutes < 1) return Colors.red;
     if (diff.inHours < 1) return Colors.orange;
@@ -164,13 +178,22 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
               final expiresAt = pick["expires_at"] as int;
               return ListTile(
                 leading: const CircleAvatar(
+                  radius: 26,
                   foregroundColor: Colors.white,
-                  child: Icon(CupertinoIcons.text_bubble),
+                  child: Icon(CupertinoIcons.photo, size: 28),
                 ),
-                title: Text(pick["creator_name"] ?? ""),
+                title: Text(
+                  pick["creator_name"] ?? "",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 subtitle: Text(
                   pick["type"] ?? "",
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
                 ),
                 trailing: Text(
                   _formatExpiry(expiresAt),

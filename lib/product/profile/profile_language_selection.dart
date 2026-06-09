@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
+import 'package:quickpick/request/request.dart';
 
 class ProfileLanguageSelection extends StatelessWidget {
   const ProfileLanguageSelection({super.key});
@@ -44,7 +45,7 @@ class ProfileLanguageSelection extends StatelessWidget {
                   width: selected ? 2 : 1)),
         ),
         onPressed: () async {
-          changeLanguage(languageState, language);
+          await changeLanguage(languageState, language, context);
           await Locales.change(context, language);
         },
         child: Container(
@@ -62,9 +63,13 @@ class ProfileLanguageSelection extends StatelessWidget {
     );
   }
 
-  changeLanguage(languageState, language) async {
+  changeLanguage(languageState, language, context) async {
     languageState.setLanguage(language);
     const storage = FlutterSecureStorage();
     await storage.write(key: "language", value: language);
+    await Request.post(
+      url: "/user/language/change/",
+      body: {"language": language},
+    ).send(context);
   }
 }

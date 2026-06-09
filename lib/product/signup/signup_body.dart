@@ -3,15 +3,19 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/crypto/crypto.dart';
 
 class SignupBody {
   Future<Map<String, Object>> generate(verificationToken, name) async {
     var publicKey = await Crypto().getPublicKey();
     var firebaseToken = await FirebaseMessaging.instance.getToken() ?? "";
+    var storage = FlutterSecureStorage();
+    var language = await storage.read(key: "language") ?? "en";
     var body = <String, Object>{
       "verification_token": verificationToken,
       "name": name,
+      "language": language,
       "public_key": publicKey,
       "firebase_token": firebaseToken,
       "legal_accepted": true

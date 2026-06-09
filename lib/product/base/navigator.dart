@@ -55,7 +55,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.lerp(
                 Theme.of(context).colorScheme.onSurface,
-                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.onSurface,
                 0.8),
             currentIndex: widget.selectedIndex,
             onTap: (index) {
@@ -99,9 +99,11 @@ class _ProductNavigatorState extends State<ProductNavigator> {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          margin: EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
-            color:
-                isSelected ? primaryColor.withValues(alpha: 0.15) : Colors.transparent,
+            color: isSelected
+                ? primaryColor.withValues(alpha: 0.15)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
@@ -131,6 +133,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
   }
 
   Widget createNotificationBadge(int count) {
+    var theme = Theme.of(context);
     if (count == -1) {
       return Positioned(
         right: 0,
@@ -141,13 +144,16 @@ class _ProductNavigatorState extends State<ProductNavigator> {
           decoration: BoxDecoration(
             color: Colors.red,
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 1),
+            border: Border.all(
+              color: theme.appBarTheme.backgroundColor ?? Colors.white,
+              width: 1,
+            ),
           ),
         ),
       );
     }
     return Positioned(
-      right: 0,
+      right: 5,
       top: 0,
       child: Container(
         width: count < 10 ? 20 : null,
@@ -159,7 +165,10 @@ class _ProductNavigatorState extends State<ProductNavigator> {
         decoration: BoxDecoration(
           color: Colors.red,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.white, width: 1),
+          border: Border.all(
+            color: theme.appBarTheme.backgroundColor ?? Colors.white,
+            width: 1,
+          ),
         ),
         child: Text(
           count.toString(),

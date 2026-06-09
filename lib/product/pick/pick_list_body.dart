@@ -9,17 +9,18 @@ import 'package:quickpick/product/base/page_body.dart';
 import 'package:quickpick/product/pick/pick_list_empty.dart';
 import 'package:quickpick/product/pick/pick_page.dart';
 import 'package:quickpick/request/request.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PickListBody extends ProductPageBody {
   final GlobalKey<_PickListBodyContentState> _key =
-  GlobalKey<_PickListBodyContentState>();
+      GlobalKey<_PickListBodyContentState>();
 
   PickListBody({super.key})
       : super(
-    name: "product.pick.list.label",
-    unselectedIcon: CupertinoIcons.text_bubble,
-    selectedIcon: CupertinoIcons.text_bubble_fill,
-  );
+          name: "product.pick.list.label",
+          unselectedIcon: CupertinoIcons.text_bubble,
+          selectedIcon: CupertinoIcons.text_bubble_fill,
+        );
 
   @override
   Widget content(BuildContext context) {
@@ -56,6 +57,19 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
   bool _isLoading = true;
   Timer? _timer;
 
+  static const int _skeletonCount = 6;
+
+  static final List<Map<String, dynamic>> _skeletonPicks = List.generate(
+    _skeletonCount,
+    (i) => {
+      "id": "skeleton_$i",
+      "creator_name": "Loading Name",
+      "type": "Loading type",
+      "expires_at":
+          DateTime.now().add(const Duration(hours: 2)).millisecondsSinceEpoch,
+    },
+  );
+
   @override
   void initState() {
     super.initState();
@@ -79,7 +93,7 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
     if (body["success"] == true) {
       final picks = List<Map<String, dynamic>>.from(body["picks"]);
       picks.sort(
-              (a, b) => (b["created_at"] as int).compareTo(a["created_at"] as int));
+          (a, b) => (b["created_at"] as int).compareTo(a["created_at"] as int));
       setState(() {
         _picks = picks;
         _isLoading = false;
@@ -109,8 +123,8 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
     if (query.isEmpty) return _picks;
     return _picks
         .where((p) =>
-    (p["type"] as String).toLowerCase().contains(query) ||
-        (p["creator_name"] as String).toLowerCase().contains(query))
+            (p["type"] as String).toLowerCase().contains(query) ||
+            (p["creator_name"] as String).toLowerCase().contains(query))
         .toList();
   }
 
@@ -142,10 +156,76 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
     return Colors.green;
   }
 
+  Widget _buildList(List<Map<String, dynamic>> picks, {bool skeleton = false}) {
+    return ListView.builder(
+      controller: skeleton ? null : _scrollController,
+      itemCount: picks.length,
+      itemBuilder: (context, index) {
+        final pick = picks[index];
+        final expiresAt = pick["expires_at"] as int;
+        return ListTile(
+          leading: skeleton
+              ? const Bone.circle(size: 52)
+              : const CircleAvatar(
+                  radius: 26,
+                  foregroundColor: Colors.white,
+                  child: Icon(CupertinoIcons.photo, size: 28),
+                ),
+          title: Text(
+            pick["creator_name"] ?? "",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            pick["type"] ?? "",
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+          trailing: Text(
+            _formatExpiry(expiresAt),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: _expiryColor(expiresAt),
+            ),
+          ),
+          onTap: skeleton
+              ? null
+              : () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PickPage(pickId: pick["id"] as String),
+                    ),
+                  );
+                  setState(() {
+                    _picks.removeWhere((p) => p["id"] == pick["id"]);
+                  });
+                },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CupertinoActivityIndicator());
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            child: Skeletonizer(
+              child: CupertinoSearchTextField(
+                placeholder:
+                    Locales.string(context, "product.pick.list.search"),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Skeletonizer(
+              child: _buildList(_skeletonPicks, skeleton: true),
+            ),
+          ),
+        ],
+      );
     }
 
     if (_picks.isEmpty) {
@@ -165,55 +245,12 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
         Expanded(
           child: _filteredPicks.isEmpty
               ? const Center(
-            child: LocaleText(
-              "product.pick.list.no.results",
-              style: TextStyle(color: Colors.grey),
-            ),
-          )
-              : ListView.builder(
-            controller: _scrollController,
-            itemCount: _filteredPicks.length,
-            itemBuilder: (context, index) {
-              final pick = _filteredPicks[index];
-              final expiresAt = pick["expires_at"] as int;
-              return ListTile(
-                leading: const CircleAvatar(
-                  radius: 26,
-                  foregroundColor: Colors.white,
-                  child: Icon(CupertinoIcons.photo, size: 28),
-                ),
-                title: Text(
-                  pick["creator_name"] ?? "",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  child: LocaleText(
+                    "product.pick.list.no.results",
+                    style: TextStyle(color: Colors.grey),
                   ),
-                ),
-                subtitle: Text(
-                  pick["type"] ?? "",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-                trailing: Text(
-                  _formatExpiry(expiresAt),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: _expiryColor(expiresAt),
-                  ),
-                ),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PickPage(
-                      pickId: pick["id"] as String,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+                )
+              : _buildList(_filteredPicks),
         ),
       ],
     );

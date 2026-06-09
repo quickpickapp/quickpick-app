@@ -21,10 +21,10 @@ class FriendListTab extends StatefulWidget {
   });
 
   @override
-  State<FriendListTab> createState() => _FriendListTabState();
+  State<FriendListTab> createState() => FriendListTabState();
 }
 
-class _FriendListTabState extends State<FriendListTab> {
+class FriendListTabState extends State<FriendListTab> {
   List<Map<String, dynamic>> _friends = [];
   bool _isLoading = true;
 
@@ -33,6 +33,8 @@ class _FriendListTabState extends State<FriendListTab> {
     super.initState();
     _loadFriends();
   }
+
+  Future<void> reload() => _loadFriends();
 
   Future<void> _loadFriends() async {
     final response = await Request.get(

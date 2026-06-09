@@ -56,6 +56,8 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late final TabController _tabController;
+  final GlobalKey<FriendListTabState> _friendListKey =
+      GlobalKey<FriendListTabState>();
 
   bool _hasSuggestions = false;
   int _invitationCount = 0;
@@ -110,8 +112,10 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorPadding: const EdgeInsets.all(4),
               dividerColor: Colors.transparent,
-              labelColor: Color.lerp(colorScheme.onSurface, colorScheme.primary, 0.8),
-              unselectedLabelColor: colorScheme.onSurface.withValues(alpha: 0.6),
+              labelColor:
+                  Color.lerp(colorScheme.onSurface, colorScheme.primary, 0.8),
+              unselectedLabelColor:
+                  colorScheme.onSurface.withValues(alpha: 0.6),
               overlayColor: WidgetStateProperty.all(Colors.transparent),
               splashFactory: NoSplash.splashFactory,
               labelStyle: const TextStyle(
@@ -148,6 +152,7 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
             controller: _tabController,
             children: [
               FriendListTab(
+                key: _friendListKey,
                 searchController: _searchController,
                 scrollController: _scrollController,
                 onDiscoverTap: () => _tabController.animateTo(1),
@@ -166,6 +171,9 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
                   if (_invitationCount != count) {
                     setState(() => _invitationCount = count);
                   }
+                },
+                onFriendAccepted: () {
+                  _friendListKey.currentState?.reload();
                 },
               ),
             ],

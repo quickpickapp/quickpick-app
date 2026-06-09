@@ -9,11 +9,13 @@ import 'package:quickpick/request/request.dart';
 class FriendInvitationsTab extends StatefulWidget {
   final TextEditingController searchController;
   final ValueChanged<int>? onInvitationCountChanged;
+  final VoidCallback? onFriendAccepted;
 
   const FriendInvitationsTab({
     super.key,
     required this.searchController,
     this.onInvitationCountChanged,
+    this.onFriendAccepted,
   });
 
   @override
@@ -71,6 +73,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
         );
       });
       widget.onInvitationCountChanged?.call(_invitations.length);
+      widget.onFriendAccepted?.call();
     }
   }
 

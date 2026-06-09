@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -10,8 +10,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quickpick/config/firebase_options.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+const _channelId = 'quickpick';
+const _channelName = 'QuickPick';
+const _vibrationPattern = [0, 150, 80, 150, 80, 300];
+
+final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -19,99 +22,105 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await _processFirebaseMessage(message);
 }
 
-Future<void> firebaseMessagingForegroundHandler(RemoteMessage message) async {
-  await _processFirebaseMessage(message);
-}
-
 Future<void> _processFirebaseMessage(RemoteMessage message) async {
   if (message.data.isEmpty) {
     return;
   }
-  String? title = message.data['title'];
-  String? body = message.data['body'];
-  String? partner = message.data['partner'];
-  String? campaign = message.data['campaign'];
-  await _showLocalNotification(title, body, partner, campaign);
+  await _showLocalNotification(
+    title: message.data['title'],
+    body: message.data['body'],
+  );
 }
 
-Future<void> _showLocalNotification(
-    String? title, String? body, String? partner, String? campaign) async {
+Future<void> _showLocalNotification({String? title, String? body}) async {
   const storage = FlutterSecureStorage();
-  if ((await storage.read(key: "notifications") ?? "") == "false") {
+  final notificationsEnabled = await storage.read(key: 'notifications') ?? '';
+  if (notificationsEnabled == 'false') {
     return;
   }
-  var androidDetails = AndroidNotificationDetails(
-    "quickpick",
-    "QuickPick",
-    importance: Importance.max,
-    priority: Priority.high,
-    ticker: 'ticker',
-    color: const Color.fromARGB(255, 255, 255, 255),
+
+  final details = NotificationDetails(
+    android: AndroidNotificationDetails(
+      _channelId,
+      _channelName,
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+      vibrationPattern: Int64List.fromList(_vibrationPattern),
+      enableVibration: true,
+    ),
+    iOS: const DarwinNotificationDetails(),
   );
-  var iosDetails = DarwinNotificationDetails();
-  var notificationDetails =
-      NotificationDetails(android: androidDetails, iOS: iosDetails);
-  final payload = json.encode({
-    'partner': partner,
-    'campaign': campaign,
-  });
+
   await flutterLocalNotificationsPlugin.show(
-    id: 0,
-    title: title,
-    body: body,
-    notificationDetails: notificationDetails,
-    payload: payload,
-  );
+      id: 0, title: title, body: body, notificationDetails: details);
 }
 
 class QuickPickNotification {
-  final GlobalKey<NavigatorState> navigatorKey;
-
   QuickPickNotification({required this.navigatorKey});
+
+  final GlobalKey<NavigatorState> navigatorKey;
 
   Future<void> setup() async {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await initializeLocalNotifications();
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+        options: DefaultFirebaseOptions.currentPlatform);
+    await _initializeLocalNotifications();
+
+    final messaging = FirebaseMessaging.instance;
     await messaging.requestPermission();
+
     if (!kIsWeb && Platform.isIOS) {
       await messaging.getAPNSToken();
     }
-    messaging.subscribeToTopic("quickpick");
-    FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
+
+    await messaging.subscribeToTopic(_channelId);
+    FirebaseMessaging.onMessage.listen(_processFirebaseMessage);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    final details =
+
+    final launchDetails =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-    if (details?.didNotificationLaunchApp ?? false) {
-      await _processNotificationClick(details?.notificationResponse);
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      await _processNotificationClick(launchDetails?.notificationResponse);
     }
   }
 
-  Future<void> initializeLocalNotifications() async {
+  Future<void> _initializeLocalNotifications() async {
     if (!await Permission.notification.isGranted) {
       await Permission.notification.request();
     }
-    var androidInitialize = AndroidInitializationSettings("notification");
-    var iosInitialize = DarwinInitializationSettings();
-    var initializationSettings = InitializationSettings(
-      android: androidInitialize,
-      iOS: iosInitialize,
-    );
+
     await flutterLocalNotificationsPlugin.initialize(
-      settings: initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        await _processNotificationClick(response);
-      },
+      settings: const InitializationSettings(
+        android: AndroidInitializationSettings('notification'),
+        iOS: DarwinInitializationSettings(),
+      ),
+      onDidReceiveNotificationResponse: _processNotificationClick,
+    );
+
+    await _resetNotificationChannel();
+  }
+
+  Future<void> _resetNotificationChannel() async {
+    final androidPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidPlugin?.deleteNotificationChannel(channelId: _channelId);
+    await androidPlugin?.createNotificationChannel(
+      AndroidNotificationChannel(
+        _channelId,
+        _channelName,
+        importance: Importance.max,
+        vibrationPattern: Int64List.fromList(_vibrationPattern),
+        enableVibration: true,
+      ),
     );
   }
 
   Future<void> _processNotificationClick(NotificationResponse? response) async {
-    var payload = response?.payload;
+    final payload = response?.payload;
     if (payload == null || payload.isEmpty) {
       return;
     }
-    //final data = json.decode(payload);
   }
 }

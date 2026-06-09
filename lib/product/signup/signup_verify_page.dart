@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/alert/loader_alert.dart';
+import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/localization/locale_text.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/base/page.dart';
@@ -106,9 +108,13 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
       return;
     }
     LoaderAlert().show(context);
+    var publicKey = await Crypto().getPublicKey();
+    var firebaseToken = await FirebaseMessaging.instance.getToken() ?? "";
     var body = <String, String>{
       "phone_number": widget.phoneNumber,
-      "code": _fullCode
+      "code": _fullCode,
+      "public_key": publicKey,
+      "firebase_token": firebaseToken,
     };
     var response = await Request.post(url: "/signup/verify/code/", body: body)
         .send(context);

@@ -53,7 +53,11 @@ class _PickButtonState extends State<PickButton>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PickCreatePage()),
+                MaterialPageRoute(
+                  builder: (context) => PickCreatePage(
+                    recipients: [],
+                  ),
+                ),
               );
             },
             backgroundColor:

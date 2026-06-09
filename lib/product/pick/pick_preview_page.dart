@@ -49,8 +49,10 @@ enum EditMode { none, draw, text }
 
 class PickPreviewPage extends StatefulWidget {
   final String imagePath;
+  final List<PickRecipient> recipients;
 
-  const PickPreviewPage({super.key, required this.imagePath});
+  const PickPreviewPage(
+      {super.key, required this.imagePath, required this.recipients});
 
   @override
   State<PickPreviewPage> createState() => _PickPreviewPageState();
@@ -89,7 +91,7 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
   Future<Uint8List?> _captureImage() async {
     try {
       final boundary = _repaintKey.currentContext!.findRenderObject()
-      as RenderRepaintBoundary;
+          as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       return byteData?.buffer.asUint8List();
@@ -104,12 +106,14 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
     _commitPendingText();
     if (!mounted) return;
 
-    final selectedRecipients = await showModalBottomSheet<List<PickRecipient>>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const FriendSelectSheet(),
-    );
+    final selectedRecipients = widget.recipients.isEmpty
+        ? await showModalBottomSheet<List<PickRecipient>>(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => const FriendSelectSheet(),
+          )
+        : widget.recipients;
 
     if (selectedRecipients == null || selectedRecipients.isEmpty) return;
 
@@ -142,9 +146,9 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
           "tag": bundle.tag,
           "recipients": bundle.decryptionKeys.entries
               .map((e) => {
-            "recipient_id": e.key,
-            "decryption_key": e.value,
-          })
+                    "recipient_id": e.key,
+                    "decryption_key": e.value,
+                  })
               .toList(),
         },
       ).send(context);
@@ -329,7 +333,7 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -365,25 +369,25 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
                       duration: const Duration(milliseconds: 200),
                       child: _mode != EditMode.none
                           ? _OptionsRow(
-                        key: const ValueKey('opts'),
-                        selectedColor: _activeColor,
-                        strokeWidth: _strokeWidth,
-                        fontSize: _fontSize,
-                        showStroke: _mode == EditMode.draw,
-                        showFontSize: _mode == EditMode.text,
-                        onColorChange: (c) {
-                          setState(() => _activeColor = c);
-                        },
-                        onStrokeChange: (s) {
-                          setState(() => _strokeWidth = s);
-                        },
-                        onFontSizeChange: (s) {
-                          setState(() {
-                            _fontSize = s;
-                            _pendingText?.fontSize = s;
-                          });
-                        },
-                      )
+                              key: const ValueKey('opts'),
+                              selectedColor: _activeColor,
+                              strokeWidth: _strokeWidth,
+                              fontSize: _fontSize,
+                              showStroke: _mode == EditMode.draw,
+                              showFontSize: _mode == EditMode.text,
+                              onColorChange: (c) {
+                                setState(() => _activeColor = c);
+                              },
+                              onStrokeChange: (s) {
+                                setState(() => _strokeWidth = s);
+                              },
+                              onFontSizeChange: (s) {
+                                setState(() {
+                                  _fontSize = s;
+                                  _pendingText?.fontSize = s;
+                                });
+                              },
+                            )
                           : const SizedBox.shrink(key: ValueKey('empty')),
                     ),
                     const SizedBox(height: 12),
@@ -492,7 +496,7 @@ class _OptionsRow extends StatelessWidget {
                       overlayColor: selectedColor.withOpacity(0.2),
                       trackHeight: 3,
                       thumbShape:
-                      const RoundSliderThumbShape(enabledThumbRadius: 7),
+                          const RoundSliderThumbShape(enabledThumbRadius: 7),
                     ),
                     child: Slider(
                       value: strokeWidth,
@@ -520,7 +524,7 @@ class _OptionsRow extends StatelessWidget {
                       overlayColor: selectedColor.withOpacity(0.2),
                       trackHeight: 3,
                       thumbShape:
-                      const RoundSliderThumbShape(enabledThumbRadius: 7),
+                          const RoundSliderThumbShape(enabledThumbRadius: 7),
                     ),
                     child: Slider(
                       value: fontSize,
@@ -642,34 +646,34 @@ class _SendButton extends StatelessWidget {
         ),
         child: isSending
             ? const SizedBox(
-          height: 20,
-          child: Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ),
-          ),
-        )
+                height: 20,
+                child: Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+              )
             : const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LocaleText(
-              "product.pick.send",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.4,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LocaleText(
+                    "product.pick.send",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.send_rounded, color: Colors.white, size: 18),
+                ],
               ),
-            ),
-            SizedBox(width: 8),
-            Icon(Icons.send_rounded, color: Colors.white, size: 18),
-          ],
-        ),
       ),
     );
   }

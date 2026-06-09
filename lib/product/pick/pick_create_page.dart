@@ -1,9 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/product/pick/pick_preview_page.dart';
 
 class PickCreatePage extends StatefulWidget {
-  const PickCreatePage({super.key});
+  final List<PickRecipient> recipients;
+
+  const PickCreatePage({super.key, required this.recipients});
 
   @override
   State<PickCreatePage> createState() => _PickCreatePageState();
@@ -70,7 +73,10 @@ class _PickCreatePageState extends State<PickCreatePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PickPreviewPage(imagePath: image.path),
+        builder: (_) => PickPreviewPage(
+          imagePath: image.path,
+          recipients: widget.recipients,
+        ),
       ),
     );
   }

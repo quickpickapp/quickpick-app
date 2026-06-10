@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/product/pick/pick_preview_page.dart';
 
@@ -13,6 +14,9 @@ class PickCreatePage extends StatefulWidget {
 }
 
 class _PickCreatePageState extends State<PickCreatePage> {
+  static const _storage = FlutterSecureStorage();
+  static const _cameraIndexKey = 'selected_camera';
+
   CameraController? _controller;
   List<CameraDescription> _cameras = [];
   bool _isInitialized = false;
@@ -26,13 +30,25 @@ class _PickCreatePageState extends State<PickCreatePage> {
   @override
   void initState() {
     super.initState();
-    _initCamera();
+    _initCameraWithStoredIndex();
+  }
+
+  Future<void> _initCameraWithStoredIndex() async {
+    final stored = await _storage.read(key: _cameraIndexKey);
+    if (stored != null) {
+      _selectedCamera = int.tryParse(stored) ?? 0;
+    }
+    await _initCamera();
   }
 
   Future<void> _initCamera() async {
     _cameras = await availableCameras();
     if (_cameras.isEmpty) {
       return;
+    }
+
+    if (_selectedCamera >= _cameras.length) {
+      _selectedCamera = 0;
     }
 
     _controller = CameraController(
@@ -56,6 +72,11 @@ class _PickCreatePageState extends State<PickCreatePage> {
       return;
     }
     _selectedCamera = _selectedCamera == 0 ? 1 : 0;
+
+    await _storage.write(
+      key: _cameraIndexKey,
+      value: _selectedCamera.toString(),
+    );
 
     await _controller?.dispose();
     setState(() => _isInitialized = false);

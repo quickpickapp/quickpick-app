@@ -132,8 +132,6 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
     final expiry = DateTime.fromMillisecondsSinceEpoch(expiresAt);
     final diff = expiry.difference(DateTime.now());
 
-    if (diff.isNegative) return "Abgelaufen";
-
     if (diff.inHours >= 1) {
       final h = diff.inHours;
       final m = diff.inMinutes % 60;
@@ -150,10 +148,9 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
   Color _expiryColor(int expiresAt) {
     final diff = DateTime.fromMillisecondsSinceEpoch(expiresAt)
         .difference(DateTime.now());
-    if (diff.isNegative) return Colors.grey;
     if (diff.inMinutes < 1) return Colors.red;
     if (diff.inHours < 1) return Colors.orange;
-    return Colors.green;
+    return Colors.grey;
   }
 
   Widget _buildList(List<Map<String, dynamic>> picks, {bool skeleton = false}) {

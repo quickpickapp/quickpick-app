@@ -80,6 +80,25 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
   // Unified history: each entry is either a DrawnLine or a TextOverlay
   final List<Object> _history = [];
   final List<Object> _redoStack = [];
+  List<Map<String, dynamic>>? _preloadedFriends;
+
+  @override
+  void initState() {
+    super.initState();
+    _preloadFriends();
+  }
+
+  Future<void> _preloadFriends() async {
+    final response = await Request.get(url: '/friendship/list/').send(context);
+    if (response == null || !mounted) return;
+    final body = jsonDecode(response.body);
+    if (body['success'] == true) {
+      setState(() {
+        _preloadedFriends =
+            List<Map<String, dynamic>>.from(body['friendships']);
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -111,7 +130,8 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (_) => const FriendSelectSheet(),
+            builder: (_) =>
+                FriendSelectSheet(preloadedFriends: _preloadedFriends),
           )
         : widget.recipients;
 
@@ -331,75 +351,82 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
           SafeArea(
             child: Column(
               children: [
+                // ── Top bar ──────────────────────────────────────────────
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _GlassIconButton(
                         icon: Icons.arrow_back_ios_new_rounded,
                         onTap: () => Navigator.pop(context),
                       ),
-                      if (_canUndo || _canRedo)
-                        Row(
-                          children: [
-                            if (_canUndo)
-                              _GlassIconButton(
-                                icon: Icons.undo_rounded,
-                                onTap: _undo,
-                              ),
-                            if (_canRedo) ...[
-                              const SizedBox(width: 8),
-                              _GlassIconButton(
-                                icon: Icons.redo_rounded,
-                                onTap: _redo,
-                              ),
-                            ],
-                          ],
+                      const Spacer(),
+                      // Draw tool
+                      _GlassIconButton(
+                        icon: Icons.edit_rounded,
+                        onTap: () => _setMode(EditMode.draw),
+                        active: _mode == EditMode.draw,
+                      ),
+                      const SizedBox(width: 8),
+                      // Text tool
+                      _GlassIconButton(
+                        icon: Icons.text_fields_rounded,
+                        onTap: () => _setMode(EditMode.text),
+                        active: _mode == EditMode.text,
+                      ),
+                      // Undo / Redo – only when available
+                      if (_canUndo) ...[
+                        const SizedBox(width: 8),
+                        _GlassIconButton(
+                          icon: Icons.undo_rounded,
+                          onTap: _undo,
                         ),
+                      ],
+                      if (_canRedo) ...[
+                        const SizedBox(width: 8),
+                        _GlassIconButton(
+                          icon: Icons.redo_rounded,
+                          onTap: _redo,
+                        ),
+                      ],
                     ],
                   ),
                 ),
-                const Spacer(),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: _mode != EditMode.none
-                          ? _OptionsRow(
-                              key: const ValueKey('opts'),
-                              selectedColor: _activeColor,
-                              strokeWidth: _strokeWidth,
-                              fontSize: _fontSize,
-                              showStroke: _mode == EditMode.draw,
-                              showFontSize: _mode == EditMode.text,
-                              onColorChange: (c) {
-                                setState(() => _activeColor = c);
-                              },
-                              onStrokeChange: (s) {
-                                setState(() => _strokeWidth = s);
-                              },
-                              onFontSizeChange: (s) {
-                                setState(() {
-                                  _fontSize = s;
-                                  _pendingText?.fontSize = s;
-                                });
-                              },
-                            )
-                          : const SizedBox.shrink(key: ValueKey('empty')),
-                    ),
-                    const SizedBox(height: 12),
-                    _ToolRow(
-                      mode: _mode,
-                      onModeTap: _setMode,
-                    ),
-                    const SizedBox(height: 20),
-                    _SendButton(onTap: _onSend, isSending: _isSending),
-                    const SizedBox(height: 36),
-                  ],
+                // ── Options panel slides in below top bar ────────────────
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeInOut,
+                  child: _mode != EditMode.none
+                      ? Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+                          child: _OptionsRow(
+                            key: const ValueKey('opts'),
+                            selectedColor: _activeColor,
+                            strokeWidth: _strokeWidth,
+                            fontSize: _fontSize,
+                            showStroke: _mode == EditMode.draw,
+                            showFontSize: _mode == EditMode.text,
+                            onColorChange: (c) {
+                              setState(() => _activeColor = c);
+                            },
+                            onStrokeChange: (s) {
+                              setState(() => _strokeWidth = s);
+                            },
+                            onFontSizeChange: (s) {
+                              setState(() {
+                                _fontSize = s;
+                                _pendingText?.fontSize = s;
+                              });
+                            },
+                          ),
+                        )
+                      : const SizedBox.shrink(key: ValueKey('empty')),
                 ),
+                const Spacer(),
+                // ── Send button ──────────────────────────────────────────
+                _SendButton(onTap: _onSend, isSending: _isSending),
+                const SizedBox(height: 36),
               ],
             ),
           ),
@@ -762,22 +789,34 @@ class _DraggableText extends StatelessWidget {
 class _GlassIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
+  final bool active;
 
-  const _GlassIconButton({required this.icon, required this.onTap});
+  const _GlassIconButton({
+    required this.icon,
+    required this.onTap,
+    this.active = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
         width: 42,
         height: 42,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.black45,
-          border: Border.all(color: Colors.white24),
+          color: active
+              ? Colors.white.withOpacity(0.22)
+              : Colors.black.withOpacity(0.45),
+          border: Border.all(
+            color: active ? Colors.white60 : Colors.white24,
+            width: active ? 1.5 : 1.0,
+          ),
         ),
-        child: Icon(icon, color: Colors.white, size: 20),
+        child:
+            Icon(icon, color: active ? Colors.white : Colors.white70, size: 20),
       ),
     );
   }

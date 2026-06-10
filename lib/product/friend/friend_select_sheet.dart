@@ -8,7 +8,9 @@ import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/request/request.dart';
 
 class FriendSelectSheet extends StatefulWidget {
-  const FriendSelectSheet();
+  final List<Map<String, dynamic>>? preloadedFriends;
+
+  const FriendSelectSheet({this.preloadedFriends});
 
   @override
   State<FriendSelectSheet> createState() => _FriendSelectSheetState();
@@ -23,7 +25,12 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
   @override
   void initState() {
     super.initState();
-    _loadFriends();
+    if (widget.preloadedFriends != null) {
+      _friends = widget.preloadedFriends!;
+      _isLoading = false;
+    } else {
+      _loadFriends();
+    }
     _searchController.addListener(() => setState(() {}));
   }
 

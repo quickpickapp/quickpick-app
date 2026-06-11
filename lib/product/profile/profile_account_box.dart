@@ -4,15 +4,22 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/product/profile/profile_name_dialog.dart';
 import 'package:quickpick/product/profile/profile_logout.dart';
 import 'package:quickpick/product/signup/signup_phone_page.dart';
 
-class ProfileAccountBox extends StatelessWidget {
+class ProfileAccountBox extends StatefulWidget {
   const ProfileAccountBox({super.key});
 
   @override
+  State<ProfileAccountBox> createState() => _ProfileAccountBoxState();
+}
+
+class _ProfileAccountBoxState extends State<ProfileAccountBox> {
+  final storage = const FlutterSecureStorage();
+
+  @override
   Widget build(BuildContext context) {
-    const storage = FlutterSecureStorage();
     var theme = Theme.of(context);
     return FutureBuilder<String?>(
       future: storage.read(key: "phone_number"),
@@ -42,8 +49,21 @@ class ProfileAccountBox extends StatelessWidget {
                         children: [
                           LocaleText("product.profile.account.name"),
                           Text(": "),
-                          Text(name.data ?? "-",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Expanded(
+                            child: Text(name.data ?? "-",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              await ProfileNameDialog.show(context, name.data);
+                              setState(() {});
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              size: 18,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 5),

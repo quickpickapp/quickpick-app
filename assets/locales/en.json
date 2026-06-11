@@ -65,6 +65,7 @@
   "product.profile.account": "Account",
   "product.profile.account.name": "Name",
   "product.profile.account.phone.number": "Phone number",
+  "product.profile.save": "Save",
   "product.profile.logout": "Logout",
   "product.profile.logout.alert": "Are you sure you want to logout?",
   "product.profile.logout.continue": "Log out now",

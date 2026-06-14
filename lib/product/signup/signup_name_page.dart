@@ -142,7 +142,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
                             focusedBorder: _buildInputBorder(),
                             filled: true,
                             fillColor:
-                            Theme.of(context).appBarTheme.backgroundColor,
+                                Theme.of(context).appBarTheme.backgroundColor,
                           ),
                         ),
                         SizedBox(height: 10),

@@ -7,6 +7,7 @@ class ProfileThemeState extends ChangeNotifier {
       : _themeMode = savedTheme == "dark" ? ThemeMode.dark : ThemeMode.light;
 
   ThemeMode get themeMode => _themeMode;
+
   bool get isDark => _themeMode == ThemeMode.dark;
 
   void setThemeMode(ThemeMode mode) {

@@ -23,8 +23,7 @@ class ProfileFooterLink extends StatelessWidget {
       child: LocaleText(
         text,
         style: TextStyle(
-            decoration: TextDecoration.none,
-            fontSize: fontSize ?? 14),
+            decoration: TextDecoration.none, fontSize: fontSize ?? 14),
       ),
     );
   }

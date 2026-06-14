@@ -4,8 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/alert/alert.dart';
 import 'package:quickpick/alert/loader_alert.dart';
 import 'package:quickpick/localization/locale_text.dart';
-import 'package:quickpick/product/profile/profile_name_dialog.dart';
 import 'package:quickpick/product/profile/profile_logout.dart';
+import 'package:quickpick/product/profile/profile_name_dialog.dart';
 import 'package:quickpick/product/signup/signup_phone_page.dart';
 
 class ProfileAccountBox extends StatefulWidget {

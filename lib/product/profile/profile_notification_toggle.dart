@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/localization/locale_text.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfileNotificationToggle extends StatefulWidget {
   const ProfileNotificationToggle({super.key});

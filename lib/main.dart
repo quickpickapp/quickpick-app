@@ -55,7 +55,8 @@ class _QuickPickAppState extends State<QuickPickApp>
     ]);
     return FutureBuilder<({String language, String theme})>(
       future: _loadPreferences(),
-      builder: (context, AsyncSnapshot<({String language, String theme})> snapshot) {
+      builder:
+          (context, AsyncSnapshot<({String language, String theme})> snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const SizedBox.shrink();
         }
@@ -76,21 +77,20 @@ class _QuickPickAppState extends State<QuickPickApp>
                 title: 'QuickPick',
                 themeMode: themeState.themeMode,
                 theme: ThemeData(
-                  useMaterial3: true,
-                  primaryColor: Colors.black,
-                  colorScheme: ColorScheme.light(
-                    primary: Colors.indigo,
-                    surface: Color(0xFFE8E8E8),
-                  ),
-                  appBarTheme: AppBarTheme(
-                    backgroundColor: Colors.white,
-                  ),
-                  bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                    backgroundColor: Colors.white,
-                  ),
-                  scaffoldBackgroundColor: Color(0xFFFAFAFA),
-                  dividerColor: Colors.black12
-                ),
+                    useMaterial3: true,
+                    primaryColor: Colors.black,
+                    colorScheme: ColorScheme.light(
+                      primary: Colors.indigo,
+                      surface: Color(0xFFE8E8E8),
+                    ),
+                    appBarTheme: AppBarTheme(
+                      backgroundColor: Colors.white,
+                    ),
+                    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                      backgroundColor: Colors.white,
+                    ),
+                    scaffoldBackgroundColor: Color(0xFFFAFAFA),
+                    dividerColor: Colors.black12),
                 darkTheme: ThemeData(
                   useMaterial3: true,
                   primaryColor: Colors.white,

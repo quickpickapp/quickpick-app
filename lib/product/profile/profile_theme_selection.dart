@@ -59,7 +59,8 @@ class ProfileThemeSelection extends StatelessWidget {
             children: [
               Icon(icon, color: theme.colorScheme.primary, size: 28),
               const SizedBox(height: 6),
-              LocaleText(label, style: TextStyle(color: theme.colorScheme.primary)),
+              LocaleText(label,
+                  style: TextStyle(color: theme.colorScheme.primary)),
             ],
           ),
         ),

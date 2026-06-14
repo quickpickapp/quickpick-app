@@ -17,6 +17,7 @@ class _HeaderState extends State<Header> {
     var theme = Theme.of(context);
     return AppBar(
       surfaceTintColor: Colors.transparent,
+      centerTitle: false,
       title: Image.asset(
         theme.brightness == Brightness.light
             ? 'assets/images/logo.png'

@@ -28,17 +28,21 @@
   "product.signup.continue": "Continue",
 
   "product.pick.list.label": "Picks",
-  "product.pick.list.new.description": "You already had picks?",
+  "product.pick.list.new.description": "You already had Picks?",
   "product.pick.list.new.login": "Sign in now",
-  "product.pick.list.search": "Search for pick...",
-  "product.pick.list.empty.title": "No picks found.",
-  "product.pick.list.empty.subtitle": "You don't have any picks right now.",
+  "product.pick.list.search": "Search for Pick...",
+  "product.pick.list.empty.title": "No Picks found.",
+  "product.pick.list.empty.subtitle": "You don't have any Picks right now.",
   "product.pick.list.no.results": "No results.",
 
   "product.pick.preview.draw": "Draw",
   "product.pick.preview.text": "Text",
 
+  "product.pick.open.failed": "Failed to open Pick.",
+  "product.pick.decryption.failed": "Decryption failed.",
+
   "product.pick.send": "Send",
+  "product.pick.reply": "Reply",
 
   "product.friend.tab.friends": "Friends",
   "product.friend.tab.discover": "Discover",

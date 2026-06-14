@@ -38,7 +38,11 @@
   "product.pick.preview.draw": "Malen",
   "product.pick.preview.text": "Text",
 
+  "product.pick.open.failed": "Das Öffnen des Pick ist fehlgeschlagen.",
+  "product.pick.decryption.failed": "Die Entschlüsselung ist fehlgeschlagen.",
+
   "product.pick.send": "Senden",
+  "product.pick.reply": "Antworten",
 
   "product.friend.tab.friends": "Freunde",
   "product.friend.tab.discover": "Entdecken",

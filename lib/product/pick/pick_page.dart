@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quickpick/crypto/crypto.dart';
+import 'package:quickpick/localization/locale_text.dart';
+import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/product/pick/pick_create_page.dart';
 import 'package:quickpick/request/request.dart';
 
@@ -44,17 +46,13 @@ class _PickPageState extends State<PickPage> {
     ).send(context);
 
     if (response == null) {
-      setState(() {
-        _error = "No response from server.";
-        _isLoading = false;
-      });
       return;
     }
 
     final body = jsonDecode(response.body);
     if (body["success"] != true) {
       setState(() {
-        _error = "Failed to open pick.";
+        _error = Locales.string(context, "product.pick.open.failed");
         _isLoading = false;
       });
       return;
@@ -90,7 +88,7 @@ class _PickPageState extends State<PickPage> {
       });
     } catch (e) {
       setState(() {
-        _error = "Decryption failed.";
+        _error = Locales.string(context, "product.pick.decryption.failed");
         _isLoading = false;
       });
     }
@@ -243,8 +241,8 @@ class _PickPageState extends State<PickPage> {
                             Icon(CupertinoIcons.reply,
                                 color: Colors.black, size: 18),
                             SizedBox(width: 8),
-                            Text(
-                              'Antworten',
+                            LocaleText(
+                              "product.pick.reply",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15,

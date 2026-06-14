@@ -27,9 +27,9 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
   static const int _resendCooldown = 60;
 
   final List<TextEditingController> _controllers =
-      List.generate(_codeLength, (_) => TextEditingController());
+  List.generate(_codeLength, (_) => TextEditingController());
   final List<FocusNode> _focusNodes =
-      List.generate(_codeLength, (_) => FocusNode());
+  List.generate(_codeLength, (_) => FocusNode());
 
   bool _isCodeValid = false;
   int _resendSecondsLeft = 0;
@@ -37,6 +37,9 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
   @override
   void initState() {
     super.initState();
+    for (final f in _focusNodes) {
+      f.addListener(() => setState(() {}));
+    }
     _startResendTimer();
   }
 
@@ -70,7 +73,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
         _controllers[i].text = i < digits.length ? digits[i] : '';
       }
       final nextFocus =
-          (digits.length < _codeLength) ? digits.length : _codeLength - 1;
+      (digits.length < _codeLength) ? digits.length : _codeLength - 1;
       FocusScope.of(context).requestFocus(_focusNodes[nextFocus]);
     } else if (value.length == 1) {
       if (index < _codeLength - 1) {
@@ -171,9 +174,9 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
     var responseBody = jsonDecode(response.body);
     Alert(
       description:
-          "product.signup.phone.${responseBody["success"] != true ? "failed" : "success"}",
+      "product.signup.phone.${responseBody["success"] != true ? "failed" : "success"}",
       type:
-          responseBody["success"] != true ? AlertType.error : AlertType.success,
+      responseBody["success"] != true ? AlertType.error : AlertType.success,
     ).show(context);
   }
 
@@ -251,7 +254,10 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                     height: 56,
                                     decoration: _buildBoxDecoration(index),
                                     alignment: Alignment.center,
-                                    child: Text(
+                                    child: _controllers[index].text.isEmpty &&
+                                        _focusNodes[index].hasFocus
+                                        ? const _BlinkingCursor()
+                                        : Text(
                                       _controllers[index].text,
                                       style: const TextStyle(
                                         fontSize: 24,
@@ -276,6 +282,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                                       style: const TextStyle(
                                           color: Colors.transparent),
                                       cursorColor: Colors.transparent,
+                                      cursorWidth: 0,
                                       decoration: const InputDecoration(
                                         counterText: '',
                                         isDense: true,
@@ -306,27 +313,27 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                               onTap: canResend ? _onResend : null,
                               child: canResend
                                   ? Text(
-                                      Locales.string(context,
-                                          "product.signup.verify.resend"),
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    )
+                                Locales.string(context,
+                                    "product.signup.verify.resend"),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
                                   : Text(
-                                      Locales.string(context,
-                                              "product.signup.verify.resend.wait")
-                                          .replaceAll("%SECONDS%",
-                                              _resendSecondsLeft.toString()),
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey[400],
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                Locales.string(context,
+                                    "product.signup.verify.resend.wait")
+                                    .replaceAll("%SECONDS%",
+                                    _resendSecondsLeft.toString()),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey[400],
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -342,9 +349,9 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
                               _isCodeValid
                                   ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withValues(alpha: 0.5),
+                                  .colorScheme
+                                  .primary
+                                  .withValues(alpha: 0.5),
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
@@ -390,9 +397,9 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
   }
 
   BoxDecoration _buildBoxDecoration(int index) {
-    final isFilled = _controllers[index].text.isNotEmpty;
+    final isFocused = _focusNodes[index].hasFocus;
     var theme = Theme.of(context);
-    final borderColor = isFilled
+    final borderColor = isFocused
         ? theme.colorScheme.primary
         : theme.dividerColor;
 
@@ -400,6 +407,51 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
       color: theme.appBarTheme.backgroundColor,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: borderColor, width: 2.0),
+    );
+  }
+}
+
+class _BlinkingCursor extends StatefulWidget {
+  const _BlinkingCursor();
+
+  @override
+  State<_BlinkingCursor> createState() => _BlinkingCursorState();
+}
+
+class _BlinkingCursorState extends State<_BlinkingCursor>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (_, __) => Opacity(
+        opacity: _controller.value > 0.5 ? 1.0 : 0.0,
+        child: Container(
+          width: 2,
+          height: 26,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.circular(1),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -27,6 +27,10 @@ class _PickPageState extends State<PickPage> {
   String? _error;
   bool _isLoading = true;
 
+  String? _selectedReaction;
+  bool _isReacting = false;
+  static const _kReactions = ['👍', '👎', '😂', '😯', '❤️', '🔥'];
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +94,34 @@ class _PickPageState extends State<PickPage> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _sendReaction(String reaction) async {
+    if (_isReacting) return;
+
+    setState(() {
+      _selectedReaction = reaction;
+      _isReacting = true;
+    });
+
+    final response = await Request.post(
+      url: "/pick/react/",
+      body: {
+        "pick_id": widget.pickId,
+        "reaction": reaction,
+      },
+    ).send(context);
+
+    if (!mounted) return;
+
+    final ok = response != null && jsonDecode(response.body)["success"] == true;
+
+    setState(() {
+      if (!ok) _selectedReaction = null;
+      _isReacting = false;
+    });
+
+    Navigator.pop(context);
   }
 
   String? _formatSentAt(dynamic raw) {
@@ -175,42 +207,55 @@ class _PickPageState extends State<PickPage> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 24),
-                child: GestureDetector(
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PickCreatePage(
-                          recipients: _answerRecipients,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (!_isLoading && _error == null)
+                      _ReactionBar(
+                        reactions: _kReactions,
+                        selected: _selectedReaction,
+                        disabled: _isReacting,
+                        onReact: _sendReaction,
+                      ),
+                    const SizedBox(height: 14),
+                    GestureDetector(
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PickCreatePage(
+                              recipients: _answerRecipients,
+                            ),
+                          ),
+                        );
+                        if (context.mounted) Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 28, vertical: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(CupertinoIcons.reply,
+                                color: Colors.black, size: 18),
+                            SizedBox(width: 8),
+                            Text(
+                              'Antworten',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                    if (context.mounted) Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(32),
                     ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(CupertinoIcons.reply,
-                            color: Colors.black, size: 18),
-                        SizedBox(width: 8),
-                        Text(
-                          'Antworten',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -249,6 +294,121 @@ class _PickPageState extends State<PickPage> {
         child: Image.memory(
           _imageBytes!,
           fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+}
+
+class _ReactionBar extends StatelessWidget {
+  final List<String> reactions;
+  final String? selected;
+  final bool disabled;
+  final ValueChanged<String> onReact;
+
+  const _ReactionBar({
+    required this.reactions,
+    required this.selected,
+    required this.disabled,
+    required this.onReact,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: reactions.map((emoji) {
+          final isSelected = selected == emoji;
+          return _ReactionButton(
+            emoji: emoji,
+            isSelected: isSelected,
+            disabled: disabled,
+            onTap: () => onReact(emoji),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _ReactionButton extends StatefulWidget {
+  final String emoji;
+  final bool isSelected;
+  final bool disabled;
+  final VoidCallback onTap;
+
+  const _ReactionButton({
+    required this.emoji,
+    required this.isSelected,
+    required this.disabled,
+    required this.onTap,
+  });
+
+  @override
+  State<_ReactionButton> createState() => _ReactionButtonState();
+}
+
+class _ReactionButtonState extends State<_ReactionButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+    );
+    _scale = Tween<double>(begin: 1.0, end: 1.35).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _handleTap() {
+    if (widget.disabled) return;
+    _ctrl.forward().then((_) => _ctrl.reverse());
+    widget.onTap();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _handleTap,
+      child: ScaleTransition(
+        scale: _scale,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: widget.isSelected
+                ? Colors.white.withOpacity(0.18)
+                : Colors.transparent,
+          ),
+          child: Center(
+            child: Text(
+              widget.emoji,
+              style: TextStyle(
+                fontSize: widget.isSelected ? 24 : 22,
+              ),
+            ),
+          ),
         ),
       ),
     );

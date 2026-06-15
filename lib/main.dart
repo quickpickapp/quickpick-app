@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:quickpick/crypto/crypto.dart';
 import 'package:quickpick/localization/locale_notifier.dart';
 import 'package:quickpick/localization/locales.dart';
+import 'package:quickpick/map_screen.dart';
 import 'package:quickpick/notification/notification.dart';
 import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
@@ -188,7 +189,7 @@ class _AppRouterState extends State<AppRouter> {
               ? SignupPhonePage()
               : SignupLegalPage();
         }
-        return ProductPage();
+        return MapScreen();
       },
     );
   }

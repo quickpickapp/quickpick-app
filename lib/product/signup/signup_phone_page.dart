@@ -43,7 +43,8 @@ class _SignupPhonePageState extends State<SignupPhonePage> {
     LoaderAlert().show(context);
     var body = <String, String>{"phone_number": phone};
     var response = await Request.post(url: "/signup/request/code/", body: body)
-        .send(context);
+        .send();
+    if (!mounted) return;
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

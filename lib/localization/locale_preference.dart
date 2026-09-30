@@ -13,7 +13,7 @@ class LocalePreference {
     return instance;
   }
 
-  setLocale(String lng) {
+  void setLocale(String lng) {
     prefs.setString('language', lng);
     Locales.selectedLocale = Locale(lng);
   }

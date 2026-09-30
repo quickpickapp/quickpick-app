@@ -28,7 +28,7 @@ class Request {
       : url = "https://${EnvironmentOptions.environment.endpoint}/v1$url",
         method = "POST";
 
-  Future<Response?> send(context) async {
+  Future<Response?> send() async {
     Map<String, String> headers = Map.from(this.headers);
     headers["Content-Type"] = "application/json; charset=UTF-8";
     const storage = FlutterSecureStorage();
@@ -38,31 +38,32 @@ class Request {
       headers["Authorization"] = "Bearer $authenticationToken";
     }
     var response = await generateResponse(headers);
-    return processResponse(context, response, headers);
+    return processResponse(response, headers);
   }
 
-  Future<Response?> processResponse(context, response, headers) async {
+  Future<Response?> processResponse(
+      Response? response, Map<String, String> headers) async {
     if (response == null && _retries < _maxRetries) {
       _retries += 1;
       await Future.delayed(Duration(milliseconds: 500 * _retries));
       var response = await generateResponse(headers);
-      return processResponse(context, response, headers);
+      return processResponse(response, headers);
     }
     if (response?.statusCode == 403) {
-      await RequestReset().reset(context);
+      await RequestReset().reset();
       return response;
     }
     if (response?.statusCode == 417) {
-      var refreshResult = await _refresh.refresh(context);
+      var refreshResult = await _refresh.refresh();
       if (refreshResult == true) {
-        return await send(context);
+        return await send();
       }
       return response;
     }
     return response;
   }
 
-  Future<Response?> generateResponse(headers) async {
+  Future<Response?> generateResponse(Map<String, String> headers) async {
     if (method == "GET") {
       try {
         final response = await get(Uri.parse(url), headers: headers)
@@ -86,7 +87,7 @@ class Request {
         _logRequest(
             method: method,
             headers: headers,
-            body: this.body,
+            body: body,
             exception: exception);
         return null;
       }

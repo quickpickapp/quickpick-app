@@ -89,7 +89,7 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
   }
 
   Future<void> _preloadFriends() async {
-    final response = await Request.get(url: '/friendship/list/').send(context);
+    final response = await Request.get(url: '/friendship/list/').send();
     if (response == null || !mounted) return;
     final body = jsonDecode(response.body);
     if (body['success'] == true) {
@@ -171,7 +171,7 @@ class _PickPreviewPageState extends State<PickPreviewPage> {
                   })
               .toList(),
         },
-      ).send(context);
+      ).send();
 
       if (response == null) return;
 
@@ -476,7 +476,7 @@ class _OptionsRow extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white12),
       ),
@@ -520,7 +520,7 @@ class _OptionsRow extends StatelessWidget {
                       activeTrackColor: selectedColor,
                       inactiveTrackColor: Colors.white24,
                       thumbColor: selectedColor,
-                      overlayColor: selectedColor.withOpacity(0.2),
+                      overlayColor: selectedColor.withValues(alpha: 0.2),
                       trackHeight: 3,
                       thumbShape:
                           const RoundSliderThumbShape(enabledThumbRadius: 7),
@@ -548,7 +548,7 @@ class _OptionsRow extends StatelessWidget {
                       activeTrackColor: selectedColor,
                       inactiveTrackColor: Colors.white24,
                       thumbColor: selectedColor,
-                      overlayColor: selectedColor.withOpacity(0.2),
+                      overlayColor: selectedColor.withValues(alpha: 0.2),
                       trackHeight: 3,
                       thumbShape:
                           const RoundSliderThumbShape(enabledThumbRadius: 7),
@@ -570,84 +570,6 @@ class _OptionsRow extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _ToolRow extends StatelessWidget {
-  final EditMode mode;
-  final ValueChanged<EditMode> onModeTap;
-
-  const _ToolRow({required this.mode, required this.onModeTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _ToolChip(
-          icon: Icons.edit_rounded,
-          label: "product.pick.preview.draw",
-          active: mode == EditMode.draw,
-          onTap: () => onModeTap(EditMode.draw),
-        ),
-        const SizedBox(width: 12),
-        _ToolChip(
-          icon: Icons.text_fields_rounded,
-          label: "product.pick.preview.text",
-          active: mode == EditMode.text,
-          onTap: () => onModeTap(EditMode.text),
-        ),
-      ],
-    );
-  }
-}
-
-class _ToolChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool active;
-  final VoidCallback onTap;
-
-  const _ToolChip({
-    required this.icon,
-    required this.label,
-    required this.active,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
-        decoration: BoxDecoration(
-          color: active
-              ? Colors.white.withOpacity(0.2)
-              : Colors.black.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: active ? Colors.white60 : Colors.white24,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: Colors.white, size: 18),
-            const SizedBox(width: 6),
-            LocaleText(
-              label,
-              style: TextStyle(
-                color: active ? Colors.white : Colors.white70,
-                fontSize: 13,
-                fontWeight: active ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -730,7 +652,7 @@ class _InlineTextInput extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.black38,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: color.withOpacity(0.6), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.6), width: 1.5),
         ),
         child: EditableText(
           controller: controller,
@@ -808,8 +730,8 @@ class _GlassIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: active
-              ? Colors.white.withOpacity(0.22)
-              : Colors.black.withOpacity(0.45),
+              ? Colors.white.withValues(alpha: 0.22)
+              : Colors.black.withValues(alpha: 0.45),
           border: Border.all(
             color: active ? Colors.white60 : Colors.white24,
             width: active ? 1.5 : 1.0,

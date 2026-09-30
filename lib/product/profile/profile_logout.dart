@@ -2,12 +2,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/request/request.dart';
 
 class ProfileLogout {
-  Future<void> logout(context) async {
-    await Request.get(url: "/user/logout/").send(context);
-    await reset(context);
+  Future<void> logout() async {
+    await Request.get(url: "/user/logout/").send();
+    await reset();
   }
 
-  Future<void> reset(context) async {
+  Future<void> reset() async {
     const storage = FlutterSecureStorage();
     await storage.delete(key: "user");
     await storage.delete(key: "phone_number");

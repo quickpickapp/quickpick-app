@@ -141,9 +141,10 @@ class _ProfileAccountBoxState extends State<ProfileAccountBox> {
     );
   }
 
-  void logout(context) async {
+  Future<void> logout(BuildContext context) async {
     LoaderAlert().show(context);
-    await ProfileLogout().logout(context);
+    await ProfileLogout().logout();
+    if (!context.mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => SignupPhonePage(),

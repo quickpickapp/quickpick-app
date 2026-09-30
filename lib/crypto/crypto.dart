@@ -40,7 +40,6 @@ class Crypto {
   Crypto({FlutterSecureStorage? storage})
       : _storage = storage ??
             const FlutterSecureStorage(
-              aOptions: AndroidOptions(encryptedSharedPreferences: true),
               iOptions:
                   IOSOptions(accessibility: KeychainAccessibility.first_unlock),
             );

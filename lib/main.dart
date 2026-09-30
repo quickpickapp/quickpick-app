@@ -10,7 +10,6 @@ import 'package:quickpick/localization/locale_notifier.dart';
 import 'package:quickpick/localization/locales.dart';
 import 'package:quickpick/map_screen.dart';
 import 'package:quickpick/notification/notification.dart';
-import 'package:quickpick/product/base/page.dart';
 import 'package:quickpick/product/profile/profile_language_state.dart';
 import 'package:quickpick/product/profile/profile_theme_state.dart';
 import 'package:quickpick/product/signup/signup_legal_page.dart';
@@ -153,7 +152,7 @@ class _AppRouterState extends State<AppRouter> {
 
   Future<({bool isAuthorized, bool legalAccepted})> _initialize() async {
     await Crypto().ensureKeyPair();
-    await QuickPickStatistic().keep(context);
+    await QuickPickStatistic().keep();
     const storage = FlutterSecureStorage();
     final legalAccepted = await storage.read(key: "legal_accepted") == "true";
     final isAuthorized = await _isAuthorized();
@@ -166,7 +165,7 @@ class _AppRouterState extends State<AppRouter> {
     if (user == null) {
       return false;
     }
-    final response = await Request.get(url: "/authorized/").send(context);
+    final response = await Request.get(url: "/authorized/").send();
     return response != null;
   }
 

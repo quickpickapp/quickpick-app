@@ -10,7 +10,7 @@ import 'package:quickpick/request/request.dart';
 class FriendSelectSheet extends StatefulWidget {
   final List<Map<String, dynamic>>? preloadedFriends;
 
-  const FriendSelectSheet({this.preloadedFriends});
+  const FriendSelectSheet({super.key, this.preloadedFriends});
 
   @override
   State<FriendSelectSheet> createState() => _FriendSelectSheetState();
@@ -41,7 +41,7 @@ class _FriendSelectSheetState extends State<FriendSelectSheet> {
   }
 
   Future<void> _loadFriends() async {
-    final response = await Request.get(url: '/friendship/list/').send(context);
+    final response = await Request.get(url: '/friendship/list/').send();
     if (response == null) return;
     final body = jsonDecode(response.body);
     if (body['success'] == true) {

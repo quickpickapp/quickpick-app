@@ -8,20 +8,20 @@ import 'package:quickpick/request/request.dart';
 class QuickPickStatistic {
   QuickPickStatistic();
 
-  Future<void> keep(context) async {
-    sendAppOpening(context);
-    sendAppInstallation(context);
+  Future<void> keep() async {
+    sendAppOpening();
+    sendAppInstallation();
   }
 
-  Future<void> sendAppOpening(context) async {
+  Future<void> sendAppOpening() async {
     var body = createStatisticBody();
     var info = await PackageInfo.fromPlatform();
     body["version"] = info.version;
     await Request.post(url: "/statistic/app/opening/", body: body)
-        .send(context);
+        .send();
   }
 
-  Future<void> sendAppInstallation(context) async {
+  Future<void> sendAppInstallation() async {
     const storage = FlutterSecureStorage();
     if (await storage.read(key: "installed") != null) {
       return;
@@ -29,7 +29,7 @@ class QuickPickStatistic {
     var body = createStatisticBody();
     var response =
         await Request.post(url: "/statistic/app/installation/", body: body)
-            .send(context);
+            .send();
     if (response == null || response.statusCode == 409) {
       return;
     }

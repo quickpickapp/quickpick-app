@@ -7,31 +7,31 @@ import 'package:quickpick/request/request_reset.dart';
 class RequestRefresh {
   Future<bool>? _currentRefresh;
 
-  Future<bool> refresh(context) {
+  Future<bool> refresh() {
     if (_currentRefresh != null) {
       return _currentRefresh!;
     }
     _currentRefresh =
-        performRefresh(context).whenComplete(() => _currentRefresh = null);
+        performRefresh().whenComplete(() => _currentRefresh = null);
     return _currentRefresh!;
   }
 
-  Future<bool> performRefresh(context) async {
+  Future<bool> performRefresh() async {
     const storage = FlutterSecureStorage();
     final refreshToken = await storage.read(key: "refresh_token") ?? "";
     if (refreshToken == "") {
-      await RequestReset().reset(context);
+      await RequestReset().reset();
       return false;
     }
     var response = await Request.post(
         url: "/refresh/",
-        body: <String, String>{"refresh_token": refreshToken}).send(context);
+        body: <String, String>{"refresh_token": refreshToken}).send();
     if (response == null || response.statusCode == 409) {
       return false;
     }
     var responseBody = jsonDecode(response.body);
     if (responseBody["success"] == false) {
-      await RequestReset().reset(context);
+      await RequestReset().reset();
       return false;
     }
     await storage.write(

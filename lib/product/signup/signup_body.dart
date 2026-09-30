@@ -7,7 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickpick/crypto/crypto.dart';
 
 class SignupBody {
-  Future<Map<String, Object>> generate(verificationToken, name) async {
+  Future<Map<String, Object>> generate(
+      String verificationToken, String name) async {
     var publicKey = await Crypto().getPublicKey();
     var firebaseToken = await FirebaseMessaging.instance.getToken() ?? "";
     var storage = FlutterSecureStorage();
@@ -31,20 +32,20 @@ class SignupBody {
       return {
         "device_id": await const AndroidId().getId() ?? "",
         "operating_system": "Android",
-        "operating_system_version": androidInfo.version.release ?? "",
-        "device_brand": androidInfo.brand ?? "",
-        "device_model": androidInfo.model ?? "",
-        "device_name": androidInfo.device ?? "",
+        "operating_system_version": androidInfo.version.release,
+        "device_brand": androidInfo.brand,
+        "device_model": androidInfo.model,
+        "device_name": androidInfo.device,
       };
     } else if (Platform.isIOS) {
       final iosInfo = await deviceInfo.iosInfo;
       return {
         "device_id": iosInfo.identifierForVendor ?? "",
         "operating_system": "IOS",
-        "operating_system_version": iosInfo.systemVersion ?? "",
+        "operating_system_version": iosInfo.systemVersion,
         "device_brand": "Apple",
-        "device_model": iosInfo.utsname.machine ?? "",
-        "device_name": iosInfo.name ?? "",
+        "device_model": iosInfo.utsname.machine,
+        "device_name": iosInfo.name,
       };
     }
     return {};

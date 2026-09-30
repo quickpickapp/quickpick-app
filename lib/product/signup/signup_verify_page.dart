@@ -120,7 +120,8 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
       "firebase_token": firebaseToken,
     };
     var response = await Request.post(url: "/signup/verify/code/", body: body)
-        .send(context);
+        .send();
+    if (!mounted) return;
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }
@@ -148,6 +149,7 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
       return;
     }
     await SignupStore().save(responseBody);
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -164,7 +166,8 @@ class _SignupVerifyPageState extends State<SignupVerifyPage> {
     LoaderAlert().show(context);
     var body = <String, String>{"phone_number": widget.phoneNumber, "code": ""};
     var response = await Request.post(url: "/signup/request/code/", body: body)
-        .send(context);
+        .send();
+    if (!mounted) return;
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

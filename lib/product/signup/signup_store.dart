@@ -1,9 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignupStore {
-  Future<Void?> save(response) async {
+  Future<void> save(Map<String, dynamic> response) async {
     const storage = FlutterSecureStorage();
     await storage.write(key: "user", value: response["user"]);
     await storage.write(key: "phone_number", value: response["phone_number"]);

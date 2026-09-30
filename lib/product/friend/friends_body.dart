@@ -29,7 +29,7 @@ class FriendsBody extends ProductPageBody {
   Future<int> notifications(BuildContext context) async {
     final invitationsResponse = await Request.get(
       url: "/friendship/invitation/list/",
-    ).send(context);
+    ).send();
     if (invitationsResponse != null) {
       final body = jsonDecode(invitationsResponse.body);
       if (body["success"] == true) {
@@ -100,7 +100,7 @@ class _FriendListBodyContentState extends State<FriendListBodyContent>
           child: Container(
             height: 46,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withOpacity(0.4),
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(14),
             ),
             child: TabBar(

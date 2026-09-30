@@ -34,8 +34,10 @@ const List<Person> _people = [
 // Screen
 // ─────────────────────────────────────────────
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
-  _MapScreenState createState() => _MapScreenState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
@@ -67,7 +69,6 @@ class _MapScreenState extends State<MapScreen> {
         person.firstName,
         isSelected: _selectedPerson?.name == person.name,
       );
-      final isSelected = _selectedPerson?.name == person.name;
       markers.add(Marker(
         markerId: MarkerId(person.name),
         position: person.position,
@@ -119,7 +120,7 @@ class _MapScreenState extends State<MapScreen> {
     canvas.drawPath(
       _bubblePath(bubbleW, bubbleH, cornerR, tipW, tipH, oy: 2.5),
       Paint()
-        ..color = Colors.black.withOpacity(0.20)
+        ..color = Colors.black.withValues(alpha: 0.20)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
     );
 
@@ -134,8 +135,8 @@ class _MapScreenState extends State<MapScreen> {
       _bubblePath(bubbleW, bubbleH, cornerR, tipW, tipH),
       Paint()
         ..color = isSelected
-            ? Colors.white.withOpacity(0.3)
-            : Colors.indigo.withOpacity(0.3)
+            ? Colors.white.withValues(alpha: 0.3)
+            : Colors.indigo.withValues(alpha: 0.3)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.2,
     );
@@ -147,7 +148,7 @@ class _MapScreenState extends State<MapScreen> {
       Offset(ax, ay),
       avatarD / 2,
       Paint()
-        ..color = isSelected ? Colors.white.withOpacity(0.22) : Colors.indigo,
+        ..color = isSelected ? Colors.white.withValues(alpha: 0.22) : Colors.indigo,
     );
 
     // Initials
@@ -163,7 +164,7 @@ class _MapScreenState extends State<MapScreen> {
     final picture = recorder.endRecording();
     final image = await picture.toImage(pw, ph);
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    final bmp = BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+    final bmp = BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
     return bmp;
   }
 
@@ -309,13 +310,13 @@ class _MapScreenState extends State<MapScreen> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
+                        color: Colors.black.withValues(alpha: 0.25),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                       if (isSelected)
                         BoxShadow(
-                          color: Colors.indigo.withOpacity(0.45),
+                          color: Colors.indigo.withValues(alpha: 0.45),
                           blurRadius: 10,
                           spreadRadius: 1,
                         ),
@@ -374,7 +375,7 @@ class _MapScreenState extends State<MapScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.55),
+                    Colors.black.withValues(alpha: 0.55),
                     Colors.transparent,
                   ],
                 ),
@@ -405,7 +406,7 @@ class _MapScreenState extends State<MapScreen> {
                             decoration: BoxDecoration(
                               color: isSel
                                   ? Colors.indigo
-                                  : Colors.black.withOpacity(0.5),
+                                  : Colors.black.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: isSel ? Colors.white : Colors.white30,
@@ -436,7 +437,7 @@ class _MapScreenState extends State<MapScreen> {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withValues(alpha: 0.5),
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white24),
                     ),

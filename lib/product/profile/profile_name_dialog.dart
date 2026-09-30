@@ -63,7 +63,8 @@ class ProfileNameDialog {
     LoaderAlert().show(context);
     var body = <String, String>{"name": newName};
     var response =
-        await Request.post(url: "/user/name/change/", body: body).send(context);
+        await Request.post(url: "/user/name/change/", body: body).send();
+    if (!context.mounted) return;
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

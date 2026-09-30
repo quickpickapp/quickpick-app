@@ -47,7 +47,8 @@ class _SignupNamePageState extends State<SignupNamePage> {
     LoaderAlert().show(context);
     var body = await SignupBody().generate(widget.verificationToken, name);
     var response =
-        await Request.post(url: "/signup/complete/", body: body).send(context);
+        await Request.post(url: "/signup/complete/", body: body).send();
+    if (!mounted) return;
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }
@@ -63,6 +64,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
       return;
     }
     await SignupStore().save(responseBody);
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

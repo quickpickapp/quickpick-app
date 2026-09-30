@@ -43,7 +43,7 @@ class _PickPageState extends State<PickPage> {
     final response = await Request.post(
       url: "/pick/open/",
       body: {"pick_id": widget.pickId},
-    ).send(context);
+    ).send();
 
     if (response == null) {
       return;
@@ -108,7 +108,7 @@ class _PickPageState extends State<PickPage> {
         "pick_id": widget.pickId,
         "reaction": reaction,
       },
-    ).send(context);
+    ).send();
 
     if (!mounted) return;
 
@@ -396,7 +396,7 @@ class _ReactionButtonState extends State<_ReactionButton>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: widget.isSelected
-                ? Colors.white.withOpacity(0.18)
+                ? Colors.white.withValues(alpha: 0.18)
                 : Colors.transparent,
           ),
           child: Center(

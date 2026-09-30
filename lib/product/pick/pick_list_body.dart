@@ -29,7 +29,7 @@ class PickListBody extends ProductPageBody {
 
   @override
   Future<int> notifications(BuildContext context) async {
-    final response = await Request.get(url: "/pick/list/").send(context);
+    final response = await Request.get(url: "/pick/list/").send();
     if (response == null) return 0;
 
     final body = jsonDecode(response.body);
@@ -86,7 +86,7 @@ class _PickListBodyContentState extends State<PickListBodyContent> {
   }
 
   Future<void> _loadPicks() async {
-    final response = await Request.get(url: "/pick/list/").send(context);
+    final response = await Request.get(url: "/pick/list/").send();
     if (response == null) return;
 
     final body = jsonDecode(response.body);

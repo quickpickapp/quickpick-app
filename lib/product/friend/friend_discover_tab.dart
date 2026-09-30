@@ -56,7 +56,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
     final response = await Request.post(
       url: "/friendship/discover/",
       body: {"contacts": contacts},
-    ).send(context);
+    ).send();
 
     if (response == null) {
       setState(() {
@@ -101,7 +101,7 @@ class _FriendDiscoverTabState extends State<FriendDiscoverTab> {
     final response = await Request.post(
       url: "/friendship/invitation/create/",
       body: {"target": userId},
-    ).send(context);
+    ).send();
 
     if (response == null) return;
 

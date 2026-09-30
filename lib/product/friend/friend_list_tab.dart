@@ -39,7 +39,7 @@ class FriendListTabState extends State<FriendListTab> {
   Future<void> _loadFriends() async {
     final response = await Request.get(
       url: "/friendship/list/",
-    ).send(context);
+    ).send();
 
     if (response == null) return;
 
@@ -64,7 +64,7 @@ class FriendListTabState extends State<FriendListTab> {
         final response = await Request.post(
           url: "/friendship/delete/",
           body: {"friend_id": friendId},
-        ).send(context);
+        ).send();
 
         if (response == null) return;
 

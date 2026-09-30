@@ -42,7 +42,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
   Future<void> _loadInvitations() async {
     final response = await Request.get(
       url: "/friendship/invitation/list/",
-    ).send(context);
+    ).send();
 
     if (response == null) return;
 
@@ -61,7 +61,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
     final response = await Request.post(
       url: "/friendship/invitation/accept/",
       body: {"invitation_id": invitationId},
-    ).send(context);
+    ).send();
 
     if (response == null) return;
 
@@ -81,7 +81,7 @@ class _FriendInvitationsTabState extends State<FriendInvitationsTab> {
     final response = await Request.post(
       url: "/friendship/invitation/decline/",
       body: {"invitation_id": invitationId},
-    ).send(context);
+    ).send();
 
     if (response == null) return;
 
